@@ -10,7 +10,7 @@ Drop PNGs here using the filenames referenced from the how-to docs. Each `> 📸
 | `chat-history.png` | [prune-history](../prune-history.md) | Chat history flyout / list |
 | `slash-clear.png` | [prune-history](../prune-history.md) | Chat input with `/clear` typed and the suggestion popup |
 | `attached-context.png` | [prune-history](../prune-history.md), [manage-context](../manage-context.md) | Chips above input with an **×** highlighted |
-| `chat-mode-picker.png` | [prune-history](../prune-history.md) | Mode dropdown showing Ask / Edit / Agent |
+| `chat-mode-picker.png` | [prune-history](../prune-history.md) | Mode dropdown showing Ask / Plan / Agent |
 | `github-com-delete.png` | [prune-history](../prune-history.md) | github.com Copilot Chat sidebar with delete menu |
 | `model-picker.png` | [choose-model](../choose-model.md) | Chat input footer with model dropdown expanded |
 | `inline-completion.png` | [choose-model](../choose-model.md) | Editor with gray ghost-text suggestion |
@@ -20,7 +20,7 @@ Drop PNGs here using the filenames referenced from the how-to docs. Each `> 📸
 | `agent-stop.png` | [tools-and-agents](../tools-and-agents.md) | Chat panel with **Stop** button visible during agent run |
 | `tool-toggles.png` | [tools-and-agents](../tools-and-agents.md) | Tool list with on/off toggles |
 | `prompt-file-picker.png` | [custom-instructions](../custom-instructions.md) | Chat input prompt-file picker |
-| `output-channel.png` | [custom-instructions](../custom-instructions.md) | Output panel → GitHub Copilot Chat channel |
+| `output-channel.png` | [custom-instructions](../custom-instructions.md) | Chat view showing Diagnostics or Chat Debug view (VS Code)
 
 ## Tips for good screenshots
 

@@ -1,6 +1,6 @@
 # Token Economy: Optimizing GitHub Copilot Chat & Agents
 
-A practical guide to reducing token spend when using GitHub Copilot Chat and agents under usage-based billing (UBB).
+A practical guide to reducing waste and controlling spend when using GitHub Copilot Chat and agents under usage-based billing (UBB).
 
 > **TL;DR** — Pick the right model, keep prompts lean, scope questions narrowly, prune chat history, and let tools do the heavy lifting instead of the LLM.
 
@@ -16,6 +16,7 @@ A practical guide to reducing token spend when using GitHub Copilot Chat and age
 - [Strategy 3 — Ask Focused Questions](#strategy-3--ask-focused-questions)
 - [Strategy 4 — Orchestrate Tools & Agents Efficiently](#strategy-4--orchestrate-tools--agents-efficiently)
 - [Strategy 5 — Pick the Right Model & Build Good Habits](#strategy-5--pick-the-right-model--build-good-habits)
+- [Strategy 6 — Pull Platform-Level Levers (Caching, Batch, Scoped Agents)](#strategy-6--pull-platform-level-levers-caching-batch-scoped-agents)
 - [Real-World Savings Examples](#real-world-savings-examples)
 - [Walkthroughs (How-To Docs)](#walkthroughs-how-to-docs)
 - [Checklist for Engineers](#checklist-for-engineers)
@@ -24,7 +25,9 @@ A practical guide to reducing token spend when using GitHub Copilot Chat and age
 
 ## Why Token Spend Matters
 
-Under usage-based billing, **every token counts** — input prompts, output responses, and conversation/context history all show up on the bill. A few small habits compound across thousands of daily interactions and can produce **80%+ cost reductions** without sacrificing quality.
+For GitHub Copilot Chat in an IDE, cost is tracked as **premium requests**: each prompt you enter counts as one premium request, multiplied by the selected model’s multiplier. In agent mode, Copilot may take follow-up actions to complete your task, but those tool calls/background steps are not charged.
+
+If you call models directly via API (Azure OpenAI / Foundry / other model APIs), cost is typically token-based, and techniques like prompt caching and batch processing can materially change pricing.
 
 ---
 
@@ -35,7 +38,7 @@ If you only do five things, do these:
 1. **Use the cheapest model that gets the job done.** Reserve top-tier models for genuinely complex tasks. → [How](docs/choose-model.md)
 2. **Ask narrow questions.** "Show failed jobs in the last hour" beats "Tell me everything about jobs." → [How](docs/focused-questions.md)
 3. **Start a new chat** when you switch topics — don't drag old context forward. → [How](docs/prune-history.md)
-4. **Skip the chat for trivial code.** Inline ghost-text completions are unmetered. → [How](docs/choose-model.md#4-use-unmetered-inline-completions-for-everyday-code)
+4. **Skip the chat for trivial code.** Prefer inline suggestions for routine edits (Copilot Free has a monthly limit for inline suggestions; paid plans include inline suggestions with included models). → [How](docs/choose-model.md#4-use-inline-suggestions-for-everyday-code)
 5. **Call a tool directly** instead of asking the model to reason through what a tool already does. → [How](docs/tools-and-agents.md)
 
 ---
@@ -44,11 +47,10 @@ If you only do five things, do these:
 
 | Driver | What It Is | Why It Costs |
 | --- | --- | --- |
-| **Model selection** | GPT-4 / Opus-tier vs. lighter models | Premium models cost multiples per token |
-| **Prompt size** | Custom instructions, pasted code, attachments | Every token is billed on every call |
-| **Output length** | Verbose answers from broad questions | Output tokens are billed too |
-| **Conversation history** | Long chats replay prior turns | Context tokens compound each turn |
-| **Multi-call agents** | Agents that plan → reason → act in many steps | One user request = many model calls |
+| **Model multiplier** | Which model you picked (or Auto) | Each prompt consumes premium requests based on model multipliers |
+| **Number of prompts** | Back-and-forth and retries | Each prompt you enter is billed as a premium request |
+| **Agent loops** | Repeated corrections/steering | More prompts to steer = more billed requests |
+| **Tool overload** | Too many tools enabled | You can hit VS Code’s 128-tools-per-request limit and lose time to retries |
 
 ---
 
@@ -56,9 +58,9 @@ If you only do five things, do these:
 
 **Goal:** stop paying for the same boilerplate on every call.
 
-- **Externalize persistent instructions.** Move large style guides, role definitions, or boilerplate out of the default prompt and into on-demand skills/commands. A 200-token instruction removed from the default prompt saves 200 tokens **on every interaction**.
+- **Externalize persistent instructions.** Move large style guides, role definitions, or boilerplate out of always-on instructions and into on-demand prompt files or skills.
 - **Inject context dynamically.** Attach only the file or snippet the question is actually about. Don't paste an entire library when the question is about one function.
-- **Be concise in your wording.** Replace multi-sentence instructions with one or two crisp sentences. Shorter prompt = fewer input tokens.
+- **Be concise in your wording.** Replace multi-sentence instructions with one or two crisp sentences. Shorter prompts tend to produce more focused responses and reduce follow-up prompts.
 
 📘 Walkthrough: [Externalize Custom Instructions](docs/custom-instructions.md)
 
@@ -90,12 +92,10 @@ If you only do five things, do these:
 
 ### Example
 
-| Prompt Style | Approx. Tokens |
+| Prompt Style | What happens |
 | --- | --- |
-| "Tell me everything about batch jobs" | ~5,000 output |
-| "Show failed batch jobs in the past hour and why they failed" | ~800 output |
-
-**~84% reduction** for the same useful answer.
+| "Tell me everything about batch jobs" | You tend to get a long, general answer |
+| "Show failed batch jobs in the past hour and why they failed" | You tend to get a short, targeted answer |
 
 📘 Walkthrough: [Ask Focused Questions](docs/focused-questions.md)
 
@@ -112,12 +112,7 @@ If you only do five things, do these:
 
 ### Example
 
-| Approach | Tokens |
-| --- | --- |
-| LLM reasons through and writes a KQL query | ~6,000 |
-| Direct call to a pre-built "exceptions" tool | ~1,200 |
-
-**~80% reduction**, faster answer.
+When a tool exists for a deterministic step, using the tool directly avoids unnecessary back-and-forth.
 
 📘 Walkthrough: [Use Tools & Agents Efficiently](docs/tools-and-agents.md)
 
@@ -128,26 +123,42 @@ If you only do five things, do these:
 **Goal:** match cost to value.
 
 - **Right-size the model.** Use lighter models for routine tasks (renames, simple completions, doc lookups). Save premium models for complex reasoning, multi-file refactors, or architectural questions.
-- **Use unmetered features.** Inline ghost-text code completions are unmetered under current Copilot plans — use them for everyday coding and reserve Chat for high-value queries.
+- **Use the right surface.** Use inline suggestions for routine edits and Copilot Chat for higher-value queries.
 - **Coach your team.** Token efficiency is a habit:
   - Ask precise questions.
   - Start fresh chats when topics change.
   - Watch output verbosity.
   - Don't request a full rewrite when a one-line patch will do.
 
-📘 Walkthrough: [Choose the Right Model](docs/choose-model.md)
+📘 Walkthroughs: [Choose the Right Model](docs/choose-model.md) · [Understand Premium Requests](docs/premium-requests.md)
+
+---
+
+## Strategy 6 — Pull Platform-Level Levers (Caching, Batch, Scoped Agents)
+
+**Goal:** stack discounts the platform already offers — they compound with everything above.
+
+- **API-only: Win prompt caching.** On Azure OpenAI / Foundry, prompt caching requires a minimum prompt length and an identical prefix; cache hits can occur in 128-token increments after the first 1,024 tokens match.
+- **API-only: Use the Batch API for async work.** Azure OpenAI batch targets 24-hour turnaround and is priced lower than global standard for supported deployments.
+- **Scope your agents (Copilot / VS Code).** Use custom agents (`.agent.md`) and Plan → Start Implementation to reduce iteration and keep workflows predictable.
+- **Unify instructions.** If you use multiple AI tools, keep always-on instructions concise and avoid duplicating the same guidance in multiple instruction files.
+
+📘 Walkthroughs: [Win with Prompt Caching](docs/prompt-caching.md) · [Use the Batch API for 50% Off](docs/batch-and-async.md) · [Scoped Agents & Handoffs](docs/scoped-agents.md)
 
 ---
 
 ## Real-World Savings Examples
 
-| Pattern | Optimized Approach | Savings |
+| Pattern | Optimized Approach | Why it helps |
 | --- | --- | --- |
-| Overly broad query: *"Explain everything about X"* | Focused query: *"Show X's key errors and reasons"* | ~84% fewer output tokens |
-| LLM reasoning through a tool step | Direct tool/API call | ~80% fewer tokens |
-| Persistent ~300-token instruction every turn | On-demand skill/agent | Removes ~300 tokens per call |
+| Overly broad query: *"Explain everything about X"* | Focused query: *"Show X's key errors and reasons"* | Less irrelevant output and fewer follow-ups |
+| LLM reasoning through a tool step | Direct tool/API call | More deterministic results with fewer retries |
+| Large always-on instructions | On-demand prompts/skills | Keeps always-on instructions concise |
 | Growing chat history kept intact | Truncate or summarize regularly | Caps context, prevents runaway growth |
 | Premium model for trivial tasks | Lighter model for routine work | Multiples cheaper per call |
+| API prompt with dynamic system message first | Stable prefix first, user query last (cache-friendly) | Cached-input discount on every repeat call (up to 100% on PTU) |
+| Bulk evaluation on Global Standard | Run on Global Batch (24-hour SLO) | **50% off** input + output token pricing |
+| Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Clearer step boundaries and fewer steering prompts |
 
 ---
 
@@ -159,10 +170,14 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 | --- | --- |
 | End or reset a chat to drop stale context | [Prune Chat History](docs/prune-history.md) |
 | Pick the cheapest model that fits the task | [Choose the Right Model](docs/choose-model.md) |
+| Understand premium-request multipliers & budgets | [Understand Premium Requests](docs/premium-requests.md) |
 | Attach only the right files / selections | [Manage Context Attachments](docs/manage-context.md) |
 | Get short, on-target answers | [Ask Focused Questions](docs/focused-questions.md) |
 | Make agents call tools instead of reasoning aloud | [Use Tools & Agents Efficiently](docs/tools-and-agents.md) |
+| Build planner→implementer agent handoffs | [Scoped Agents & Handoffs](docs/scoped-agents.md) |
 | Move boilerplate out of every prompt | [Externalize Custom Instructions](docs/custom-instructions.md) |
+| Earn the cached-input discount on API calls | [Win with Prompt Caching](docs/prompt-caching.md) |
+| Run bulk workloads at 50% off | [Use the Batch API for 50% Off](docs/batch-and-async.md) |
 
 > Screenshots live in [`docs/images/`](docs/images/README.md). The how-to docs reference them by filename — drop matching PNGs in to enable inline images.
 
@@ -172,13 +187,16 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 
 Before sending a Copilot Chat message, ask yourself:
 
-- [ ] Am I using the **cheapest model** that can answer this?
+- [ ] Am I using the **cheapest model** (or `Auto`) that can answer this?
 - [ ] Is my prompt **as short as it can be** without losing meaning?
 - [ ] Have I attached **only the relevant** file/snippet?
 - [ ] Am I asking **one focused question**, not five?
-- [ ] Have I **constrained the output** (length, format)?
+- [ ] Have I **constrained the output** (length, format, schema)?
 - [ ] Is this conversation still **on-topic**, or should I start a new chat?
 - [ ] Could a **tool, script, or inline completion** answer this instead?
+- [ ] If this is an agent task, is it **scoped** (small goal, restricted tools)?
+- [ ] If I'm calling an API directly, is the **stable prefix first** so prompt caching can hit?
+- [ ] If this is bulk / overnight work, am I using **Batch API** for 50% off?
 
 ---
 

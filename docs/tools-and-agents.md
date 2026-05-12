@@ -4,6 +4,11 @@ Agents shine when they call **tools** to do real work. They burn tokens when the
 
 > **Goal:** prefer tool calls over LLM reasoning, and keep agent chains short.
 
+Primary references:
+
+- Tool picker, tool limits, and best practices in VS Code: https://code.visualstudio.com/docs/copilot/agents/agent-tools
+- Copilot agent-mode billing behavior: https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide
+
 ---
 
 ## 1. Prefer a real tool over LLM reasoning
@@ -50,10 +55,7 @@ The smaller the scope, the fewer tools fire, the fewer tokens you spend.
 
 ## 4. Disable tools you don't need
 
-Most chat surfaces let you turn individual tools on/off for a session. Disabling unused tools:
-
-- Removes their definitions from the prompt (saves input tokens).
-- Prevents the agent from calling them speculatively.
+Most chat surfaces let you turn individual tools on/off for a session. Select only the tools relevant to your prompt.
 
 ![Tool toggle UI](images/tool-toggles.png)
 
@@ -68,9 +70,23 @@ A single mega-agent loaded with every domain rule pays for that whole prompt **o
 | One monolith agent (auth + billing + ops + docs) | Fat prompt every call |
 | Specialized skills (`/auth`, `/billing`, …) invoked on demand | Thin prompt by default |
 
+In VS Code, define each role as a **custom `.agent.md`** with a restricted `tools` list and optional handoffs. See [Scoped Agents & Handoffs](scoped-agents.md) for the full pattern.
+
 ---
 
-## 6. Offload deterministic work to plain code
+## 6. Watch the 128-tools-per-request limit
+
+A chat request can have a maximum of **128 tools enabled** at a time. If you see an error about exceeding 128 tools per request, deselect tools or entire MCP servers in the tools picker.
+
+---
+
+## 7. Remember what is billed in agent mode
+
+In Copilot Chat agent mode, **each prompt you enter** counts as one premium request multiplied by the model’s multiplier. Copilot may take follow-up actions to complete your task, but tool calls/background steps are not charged.
+
+---
+
+## 8. Offload deterministic work to plain code
 
 Anything that doesn't need an LLM, shouldn't use one:
 

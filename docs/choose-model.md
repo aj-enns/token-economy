@@ -1,6 +1,6 @@
 # How-To: Choose the Right Model
 
-Premium models can cost **multiples per token** vs. lighter ones. Matching the model to the task is one of the biggest cost levers you have.
+In Copilot Chat, different models consume premium requests at different multipliers. Picking the right model is one of the biggest cost controls you have. 
 
 > **Goal:** use the cheapest model that produces a good-enough answer.
 
@@ -12,9 +12,12 @@ Premium models can cost **multiples per token** vs. lighter ones. Matching the m
 
 - At the bottom of the Chat input, click the **model picker** (shows current model name).
 - Pick a lighter model for routine work, premium for hard problems.
+- For mixed-complexity sessions, choose **`Auto`** — it lets Copilot auto model selection choose the best available model. On paid plans, auto model selection qualifies for a 10% premium-request multiplier discount.
 
 ![Model picker in the Chat input](images/model-picker.png)
 
+
+> 💡 GitHub Copilot meters chat via **premium requests** with per-model multipliers — the model you pick directly controls how much of your monthly allowance each turn consumes. See [Understand Premium Requests](premium-requests.md).
 
 ---
 
@@ -25,7 +28,7 @@ Premium models can cost **multiples per token** vs. lighter ones. Matching the m
 | Renames, syntax help, doc lookups, simple Q&A | **Light** (e.g. GPT-4.1-mini, Haiku-class) |
 | Single-file edits, small refactors, test scaffolding | **Mid** (e.g. GPT-4.1, Sonnet-class) |
 | Multi-file refactors, architectural design, deep debugging | **Premium** (e.g. GPT-5, Opus-class) |
-| Repetitive code completions while typing | **Inline ghost text** (unmetered) |
+| Repetitive code completions while typing | **Inline suggestions** (limited on Copilot Free) |
 
 > Names change over time — apply the *tier* rule, not specific model names.
 
@@ -41,9 +44,14 @@ Workflow:
 
 ---
 
-## 4. Use unmetered inline completions for everyday code
+## 4. Use inline suggestions for everyday code
 
-Inline ghost-text completions (the gray suggestions while you type) are **unmetered** under current Copilot plans. For routine code, accept inline suggestions instead of opening Chat.
+Inline ghost-text completions (the gray suggestions while you type) are a separate surface from Chat.
+
+- Copilot Free includes up to **2,000** real-time code suggestions per month.
+- Paid Copilot plans include real-time code suggestions with the included models.
+
+For routine code, accept inline suggestions instead of opening Chat.
 
 ![Inline ghost-text completion](images/inline-completion.png)
 > 📸 **Screenshot needed:** `docs/images/inline-completion.png` — editor showing gray ghost-text suggestion mid-line.
@@ -52,8 +60,8 @@ Inline ghost-text completions (the gray suggestions while you type) are **unmete
 
 ## 5. Set a default model per workspace (optional)
 
-VS Code remembers the last-used model per chat. If your workspace is mostly routine, leaving the default on a light model nudges you toward cheaper calls.
+VS Code remembers the last-used model per chat. If your workspace is mostly routine, leaving the default on a light model (or `Auto`) nudges you toward cheaper calls.
 
----
+
 
 [← Back to README](../readme.md)

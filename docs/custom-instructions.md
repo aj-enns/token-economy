@@ -44,14 +44,14 @@ Example: `.github/prompts/release-notes.prompt.md`
 
 ```markdown
 ---
-mode: ask
+agent: ask
 ---
 
 You are generating release notes. Group changes under
 **Features**, **Fixes**, **Chores**. Use the diff in context.
 ```
 
-Invoke it on demand from the chat input — it costs **zero** tokens until used.
+Invoke it on demand from the chat input — it doesn't affect other chat requests until you run it.
 
 ![Prompt file picker](images/prompt-file-picker.png)
 > 📸 **Screenshot needed:** `docs/images/prompt-file-picker.png` — chat input showing the prompt-file picker.
@@ -83,15 +83,13 @@ These are common bloat sources — almost always cheaper somewhere else:
 - ❌ Sample code blocks "for reference".
 - ❌ Politeness preambles ("Always be polite and thorough…").
 
-A 300-token global instruction removed = **300 tokens saved on every chat turn, forever.**
-
 ---
 
 ## 6. Verify what's actually being sent
 
 In VS Code, you can inspect the resolved context for a turn:
 
-- Open the **Output panel** → channel **GitHub Copilot Chat** (or **Language Model** logs) to see what was sent.
+- Use the chat customization diagnostics view (Right-click Chat view → Diagnostics) and the Chat Debug view to see which instructions were applied.
 - Look for instruction blocks; trim anything that doesn't earn its place.
 
 ![Copilot Chat output channel](images/output-channel.png)

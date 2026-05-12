@@ -15,7 +15,7 @@ Broad prompts produce essays. Focused prompts produce answers. This is one of th
 | "Improve this code" | "Reduce the time complexity of `processItems` from O(n²) to O(n)" |
 | "Write tests" | "Write 3 unit tests for `parseInput`: valid input, empty string, malformed JSON" |
 
-The right column typically returns **5–10× fewer tokens** for the same useful answer.
+The right column typically returns much shorter answers for the same useful outcome.
 
 ---
 

@@ -1,6 +1,6 @@
 # How-To: Prune Chat History
 
-Long Copilot Chat sessions silently inflate token cost because every turn replays prior context. Use these techniques to keep the context window small.
+Long Copilot Chat sessions can get noisy and less relevant over time. Use these techniques to keep your conversations focused.
 
 > **Goal:** end conversations cleanly, drop stale context, and start fresh when you switch tasks.
 
@@ -13,7 +13,7 @@ The fastest reset. Use it any time you switch tasks or files.
 **VS Code:**
 
 - Click the **+ New Chat** icon in the Chat view title bar, **or**
-- Press `Ctrl+L` (Windows / Linux) or `Cmd+L` (macOS) while the Chat view is focused.
+- Press `Ctrl+N` while the Chat view is focused.
 
 ![New Chat button in the Chat view title bar](images/new-chat-button.png)
 
@@ -36,7 +36,7 @@ Instead of continuing a bloated thread, jump to (or start from) a cleaner one.
 
 ## 3. Use the `/clear` slash command
 
-Wipe the active conversation's context without leaving the panel.
+Start a new chat session without leaving the panel.
 
 In the chat input, type:
 
@@ -65,16 +65,22 @@ Files and selections you've attached are sent on **every turn** until you remove
 
 ---
 
-## 5. Switch chat modes to start fresh
+## 5. Switch agents to start fresh
 
-Each mode (**Ask**, **Edit**, **Agent**) keeps its own context. Switching modes for a new task gives you a clean slate without losing the option to come back.
+Switching agents (for example, **Ask**, **Plan**, **Agent**) is a quick way to change how Copilot approaches a task.
 
 ![Chat mode picker](images/chat-mode-picker.png)
+
+---
+
+## 6. Use the `/compact` slash command
+
+If a chat is getting long, `/compact` compacts the conversation context by summarizing it.
 
 
 ---
 
-## 6. Summarize-and-restart (Agent mode)
+## 7. Summarize-and-restart (Agent mode)
 
 When you've made progress in a long agent session but the context is getting heavy:
 
@@ -85,14 +91,14 @@ When you've made progress in a long agent session but the context is getting hea
    ```
 
 2. Copy the summary.
-3. Start a **New Chat** (`Ctrl+L`).
+3. Start a **New Chat** (`Ctrl+N`).
 4. Paste the summary as your first message.
 
 You keep the *decisions* without paying for the full prior transcript.
 
 ---
 
-## 7. Delete sessions on github.com
+## 8. Delete sessions on github.com
 
 For Copilot Chat in the browser:
 
