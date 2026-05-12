@@ -1,8 +1,8 @@
 # How-To: Prune Chat History
 
-Long Copilot Chat sessions can get noisy and less relevant over time. Use these techniques to keep your conversations focused.
+Under usage-based billing (UBB), every reply re-sends the prior conversation as **input tokens**. Long Copilot Chat sessions get expensive fast — use these techniques to keep conversations focused and the input bucket small.
 
-> **Goal:** end conversations cleanly, drop stale context, and start fresh when you switch tasks.
+> **Goal:** end conversations cleanly, drop stale context, and start fresh when you switch tasks — directly reducing input tokens on the next reply.
 
 ---
 
@@ -94,7 +94,7 @@ When you've made progress in a long agent session but the context is getting hea
 3. Start a **New Chat** (`Ctrl+N`).
 4. Paste the summary as your first message.
 
-You keep the *decisions* without paying for the full prior transcript.
+You keep the *decisions* without re-sending the full prior transcript as input tokens on every future reply.
 
 ---
 

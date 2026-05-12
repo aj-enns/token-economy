@@ -1,8 +1,8 @@
 # How-To: Externalize Custom Instructions
 
-Anything in your "always-on" instructions is sent on **every chat turn**. Keep persistent instructions tiny; move the rest to on-demand skills, prompts, or per-file instruction files.
+Anything in your "always-on" instructions (`copilot-instructions.md` and matching `*.instructions.md` files) is sent to the model on **every chat turn** as input tokens. Under usage-based billing, every token you keep in always-on instructions is paid for on every reply, forever. Keep persistent instructions tiny; move the rest to on-demand prompt files, scoped instructions, or skills.
 
-> **Goal:** stop paying for boilerplate you don't need on every call.
+> **Goal:** stop paying input tokens for boilerplate you don't need on every call.
 
 ---
 
@@ -51,7 +51,7 @@ You are generating release notes. Group changes under
 **Features**, **Fixes**, **Chores**. Use the diff in context.
 ```
 
-Invoke it on demand from the chat input — it doesn't affect other chat requests until you run it.
+Invoke it on demand from the chat input — its tokens only count on the turns you actually run it.
 
 ![Prompt file picker](images/prompt-file-picker.png)
 > 📸 **Screenshot needed:** `docs/images/prompt-file-picker.png` — chat input showing the prompt-file picker.

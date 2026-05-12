@@ -19,9 +19,15 @@ Custom agents let you set up a read-only planning role and a separate implementa
 
 VS Code enforces a hard limit of **128 tools per request**. If you exceed the limit, you need to deselect tools or whole MCP servers in the tools picker ([Use tools with agents](https://code.visualstudio.com/docs/copilot/agents/agent-tools)).
 
-### 1.3 Billing mental model (Copilot Chat)
+### 1.3 Billing mental model (Copilot Chat under UBB)
 
-In Copilot Chat agent mode, **each prompt you enter counts as one premium request multiplied by the model’s multiplier**. Copilot may take follow-up actions (tool calls/background steps), but those actions are not charged ([Asking GitHub Copilot questions in your IDE](https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide), [Requests in GitHub Copilot](https://docs.github.com/en/copilot/concepts/billing/copilot-requests)).
+Under **usage-based billing** (starting June 1, 2026), every model call in an agent run generates billable tokens — input, output, and cached — converted to AI Credits ([Usage-based billing for individuals](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)). Scoping agents with restricted tools and a smaller goal directly reduces:
+
+- **Input tokens** per call (smaller agent prompt, fewer attached tools)
+- **Number of calls** per task (less re-planning and re-reading)
+- **Output tokens** per call (focused goal → focused response)
+
+> **Compare with the prior model:** under request-based billing, only the prompts *you* entered counted as premium requests; tool calls / background steps in agent mode were not charged. Under UBB, those calls do generate tokens, so scoping matters more.
 
 ---
 
@@ -92,7 +98,7 @@ Rules:
 - [ ] Use **Plan → Start Implementation** for complex tasks
 - [ ] Keep a read-only planner separate from an implementer
 - [ ] Keep tools under the **128 tools/request** limit
-- [ ] Remember: in Copilot agent mode, prompts you enter count; tool calls/background steps do not
+- [ ] Remember: under UBB, every model call in an agent run generates billable tokens — a small, scoped goal keeps total tokens (and AI Credits) down
 
 ---
 

@@ -1,19 +1,19 @@
-# Token Economy: Optimizing GitHub Copilot Chat & Agents
+# Token Economy: Optimizing GitHub Copilot Chat & Agents under Usage-Based Billing
 
-A practical guide to reducing waste and controlling spend when using GitHub Copilot Chat and agents under usage-based billing (UBB).
+A practical guide to controlling spend when using GitHub Copilot Chat and agents under **usage-based billing (UBB)** — the billing model GitHub is moving Copilot to on **June 1, 2026** ([source](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)).
 
-> **TL;DR** — Pick the right model, keep prompts lean, scope questions narrowly, prune chat history, and let tools do the heavy lifting instead of the LLM.
+> **TL;DR** — Under UBB, you pay for **tokens** (input + output + cached) converted to **GitHub AI Credits** (1 credit = $0.01). Pick a cheaper model, keep prompts lean, ask focused questions to shorten outputs, prune history, scope agents, and let tools do deterministic work instead of the LLM.
 
 ---
 
 ## Table of Contents
 
-- [Why Token Spend Matters](#why-token-spend-matters)
+- [How UBB Bills Copilot](#how-ubb-bills-copilot)
 - [Quick Wins (Start Here)](#quick-wins-start-here)
 - [Key Cost Drivers](#key-cost-drivers)
 - [Strategy 1 — Trim Prompt Overhead](#strategy-1--trim-prompt-overhead)
 - [Strategy 2 — Manage Memory & Context](#strategy-2--manage-memory--context)
-- [Strategy 3 — Ask Focused Questions](#strategy-3--ask-focused-questions)
+- [Strategy 3 — Ask Focused Questions (Shrink Output)](#strategy-3--ask-focused-questions-shrink-output)
 - [Strategy 4 — Orchestrate Tools & Agents Efficiently](#strategy-4--orchestrate-tools--agents-efficiently)
 - [Strategy 5 — Pick the Right Model & Build Good Habits](#strategy-5--pick-the-right-model--build-good-habits)
 - [Real-World Savings Examples](#real-world-savings-examples)
@@ -22,10 +22,27 @@ A practical guide to reducing waste and controlling spend when using GitHub Copi
 
 ---
 
-## Why Token Spend Matters
+## How UBB Bills Copilot
 
-For GitHub Copilot Chat in an IDE, cost is tracked as **premium requests**: each prompt you enter counts as one premium request, multiplied by the selected model’s multiplier. In agent mode, Copilot may take follow-up actions to complete your task, but those tool calls/background steps are not charged.
+Starting **June 1, 2026**, every Copilot interaction in Chat, CLI, cloud agent, Spaces, Spark, and third-party coding agents is metered by **tokens** — input + output + cached — priced per model and converted to **GitHub AI Credits** (1 credit = $0.01 USD).
 
+Each Copilot plan ships with a **monthly AI Credits allowance**:
+
+| Plan | Monthly AI Credits | Notes |
+| --- | --- | --- |
+| Copilot Free | Limited | Plus 2,000 inline suggestions/month |
+| Copilot Pro | 1,000 | |
+| Copilot Pro+ | 3,900 | |
+| Copilot Business | 1,900 per license | Pooled at billing-entity level |
+| Copilot Enterprise | 3,900 per license | Pooled at billing-entity level |
+
+When the allowance is exhausted, additional usage is billed at per-token rates (1 credit = $0.01), subject to budget policy.
+
+**Code completions and next edit suggestions are not billed in AI Credits** — they stay unlimited on paid plans.
+
+> **Was it different before?** Yes. Before June 1, 2026, Copilot used **request-based billing** — each prompt counted as one *premium request* multiplied by a model multiplier. Under UBB, multipliers go away (except for legacy annual subscribers who stay on request-based billing), and **the actual token volume** of every interaction is what determines cost.
+
+Sources: [Usage-based billing for individuals](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals) · [Usage-based billing for organizations and enterprises](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises) · [Models and pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 
 ---
 
@@ -33,32 +50,33 @@ For GitHub Copilot Chat in an IDE, cost is tracked as **premium requests**: each
 
 If you only do five things, do these:
 
-1. **Use the cheapest model that gets the job done.** Reserve top-tier models for genuinely complex tasks. → [How](docs/choose-model.md)
-2. **Ask narrow questions.** "Show failed jobs in the last hour" beats "Tell me everything about jobs." → [How](docs/focused-questions.md)
-3. **Start a new chat** when you switch topics — don't drag old context forward. → [How](docs/prune-history.md)
-4. **Skip the chat for trivial code.** Prefer inline suggestions for routine edits (Copilot Free has a monthly limit for inline suggestions; paid plans include inline suggestions with included models). → [How](docs/choose-model.md#4-use-inline-suggestions-for-everyday-code)
-5. **Call a tool directly** instead of asking the model to reason through what a tool already does. → [How](docs/tools-and-agents.md)
+1. **Use the cheapest model that meets the bar.** Per-token prices span roughly 25× across the lineup. → [How](docs/choose-model.md)
+2. **Ask narrow questions to keep output short.** Under UBB, output tokens are priced ~4–8× higher than input tokens. → [How](docs/focused-questions.md)
+3. **Start a new chat** when topics change — old turns get re-sent as input tokens on every reply. → [How](docs/prune-history.md)
+4. **Skip Chat for trivial code.** Inline suggestions and next edit suggestions don't draw AI Credits at all on paid plans. → [How](docs/choose-model.md#4-use-inline-suggestions-for-everyday-code)
+5. **Let tools do deterministic work.** Each agent step is more tokens; a single tool call costs much less than several rounds of reasoning. → [How](docs/tools-and-agents.md)
 
 ---
 
 ## Key Cost Drivers
 
-| Driver | What It Is | Why It Costs |
+| Driver | What It Is | Why It Costs in UBB |
 | --- | --- | --- |
-| **Model multiplier** | Which model you picked (or Auto) | Each prompt consumes premium requests based on model multipliers |
-| **Number of prompts** | Back-and-forth and retries | Each prompt you enter is billed as a premium request |
-| **Agent loops** | Repeated corrections/steering | More prompts to steer = more billed requests |
-| **Tool overload** | Too many tools enabled | You can hit VS Code’s 128-tools-per-request limit and lose time to retries |
+| **Model choice** | Which model you picked (or Auto) | Each model has its own per-token price for input, output, and cached tokens |
+| **Output length** | How verbose the response is | Output tokens are typically the most expensive bucket (~4–8× input) |
+| **Input length** | Prompt + attached context + chat history | Every turn re-sends the running conversation as input tokens |
+| **Agent loops** | Multiple under-the-hood model calls per task | Long agentic sessions generate many tokens; complex agent runs can dwarf a single chat |
+| **Tool overload** | Too many tools enabled | You can hit VS Code's 128-tools-per-request limit and lose time (and tokens) to retries |
 
 ---
 
 ## Strategy 1 — Trim Prompt Overhead
 
-**Goal:** stop paying for the same boilerplate on every call.
+**Goal:** shrink the **input tokens** that get re-sent on every turn.
 
-- **Externalize persistent instructions.** Move large style guides, role definitions, or boilerplate out of always-on instructions and into on-demand prompt files or skills.
+- **Externalize persistent instructions.** Move large style guides, role definitions, or boilerplate out of always-on `copilot-instructions.md` and into on-demand prompt files (`*.prompt.md`) or skills (`SKILL.md`). Always-on instructions are sent on every turn; on-demand prompts and skills are only sent when invoked.
 - **Inject context dynamically.** Attach only the file or snippet the question is actually about. Don't paste an entire library when the question is about one function.
-- **Be concise in your wording.** Replace multi-sentence instructions with one or two crisp sentences. Shorter prompts tend to produce more focused responses and reduce follow-up prompts.
+- **Be concise in your wording.** Replace multi-sentence instructions with one or two crisp sentences. Shorter prompts tend to produce shorter, more focused responses — and output tokens are the most expensive bucket.
 
 📘 Walkthrough: [Externalize Custom Instructions](docs/custom-instructions.md)
 
@@ -66,34 +84,35 @@ If you only do five things, do these:
 
 ## Strategy 2 — Manage Memory & Context
 
-**Goal:** keep the context window small and relevant.
+**Goal:** keep the running conversation small so each new reply re-sends fewer input tokens.
 
-- **Prune history.** Limit how many recent turns the model sees, or summarize older exchanges into a short recap.
-- **Reset when topic changes.** Start a new chat when you finish a logical task. Don't carry yesterday's conversation into today's question.
-- **Summarize long histories.** Use a smaller, cheaper model to compress chat history before feeding it back to a premium model.
-- **Cache and reference, don't re-send.** If the same context is reused across turns, store it once and refer to it (e.g., "use the schema from earlier") instead of pasting it again.
+- **Prune history.** Use `/clear` or start a new chat when you switch tasks. Every prior turn becomes input tokens on the next reply.
+- **Reset when the topic changes.** A focused 5-turn chat is cheaper than a sprawling 50-turn one carrying yesterday's work.
+- **Summarize long histories.** Use `/compact` (or ask the model for a 5-bullet summary, copy it, start a new chat, paste it). You keep the decisions without re-sending the full transcript.
+- **Reference, don't repaste.** If you already shared a schema or file earlier in the chat, refer back to it ("using the schema from earlier…") rather than pasting it again.
 
 📘 Walkthroughs: [Prune Chat History](docs/prune-history.md) · [Manage Context Attachments](docs/manage-context.md)
 
 ---
 
-## Strategy 3 — Ask Focused Questions
+## Strategy 3 — Ask Focused Questions (Shrink Output)
 
-**Goal:** small input → small output.
+**Goal:** small input → small output. Output tokens are the priciest tokens you'll generate.
 
 - **Be specific.** Targeted prompts return targeted answers. Broad prompts return essays.
 - **Avoid "kitchen sink" prompts.** Don't bundle unrelated questions. Break complex tasks into smaller steps and request only what you need now.
-- **Constrain the output.** Use phrases like:
+- **Constrain the output explicitly.** Use phrases like:
   - "Summarize in 5 bullet points."
   - "Just give the function signature."
-  - "Return only the changed lines."
+  - "Return only the changed lines as a diff."
+  - "Code only, no commentary."
 
 ### Example
 
 | Prompt Style | What happens |
 | --- | --- |
-| "Tell me everything about batch jobs" | You tend to get a long, general answer |
-| "Show failed batch jobs in the past hour and why they failed" | You tend to get a short, targeted answer |
+| "Tell me everything about batch jobs" | A long, general answer — lots of output tokens |
+| "Show failed batch jobs in the past hour and why they failed" | A short, targeted answer — far fewer output tokens |
 
 📘 Walkthrough: [Ask Focused Questions](docs/focused-questions.md)
 
@@ -101,17 +120,17 @@ If you only do five things, do these:
 
 ## Strategy 4 — Orchestrate Tools & Agents Efficiently
 
-**Goal:** stop making the LLM do work a tool can do directly.
+**Goal:** stop making the LLM do work a tool can do directly. Under UBB, every under-the-hood model call in an agent run generates billable tokens — long agentic sessions can consume far more than a single chat.
 
 - **Prefer real tools over LLM reasoning.** If a query, API, or built-in skill exists, call it directly. Don't ask the model to "think aloud" through what a tool would just answer.
-- **Minimize chain-of-thought steps.** Each planning/reflection step is another model call. If one good prompt does the job, prefer that over a multi-step chain.
-- **Split monolithic agents.** A single agent loaded with every domain rule pays for that whole prompt on every call. Specialized sub-agents/skills with smaller prompts only pull weight when invoked.
-- **Scope your agents.** Use custom agents (`.agent.md`) and Plan → Start Implementation to reduce iteration and keep workflows predictable.
+- **Minimize chain-of-thought steps.** Each planning/reflection step is another model call generating more tokens. If one good prompt does the job, prefer that over a multi-step chain.
+- **Split monolithic agents.** A single agent loaded with every domain rule re-sends that whole prompt on every call. Specialized sub-agents and skills with smaller prompts only pull weight when invoked.
+- **Scope your agents.** Use custom agents (`.agent.md`) and Plan → Start Implementation so each step has a small goal and a restricted tool set.
 - **Offload deterministic steps.** Use plain code/logic for anything that doesn't actually need an LLM.
 
 ### Example
 
-When a tool exists for a deterministic step, using the tool directly avoids unnecessary back-and-forth.
+When a tool exists for a deterministic step, using the tool directly avoids many rounds of model reasoning (and the tokens that come with them).
 
 📘 Walkthroughs: [Use Tools & Agents Efficiently](docs/tools-and-agents.md) · [Scoped Agents & Handoffs](docs/scoped-agents.md)
 
@@ -119,30 +138,31 @@ When a tool exists for a deterministic step, using the tool directly avoids unne
 
 ## Strategy 5 — Pick the Right Model & Build Good Habits
 
-**Goal:** match cost to value.
+**Goal:** match per-token cost to the value of the answer.
 
-- **Right-size the model.** Use lighter models for routine tasks (renames, simple completions, doc lookups). Save premium models for complex reasoning, multi-file refactors, or architectural questions.
-- **Use the right surface.** Use inline suggestions for routine edits and Copilot Chat for higher-value queries.
-- **Coach your team.** Token efficiency is a habit:
+- **Right-size the model.** Per-token prices span roughly 25× between lightweight (e.g. GPT-5 mini, Grok Code Fast, Gemini Flash) and powerful (e.g. GPT-5.5, Claude Opus, Gemini Pro) models. Save the powerful ones for genuinely hard problems.
+- **Use Auto for routine work.** Copilot auto model selection picks based on real-time health and gets a **10% multiplier discount** on paid plans (for legacy request-based subscribers); under UBB, Auto still helps avoid pinning an expensive model when you don't need it.
+- **Use the right surface.** Inline suggestions and next edit suggestions don't draw AI Credits on paid plans — use them for routine edits. Reserve Chat for higher-value queries.
+- **Coach your team.** Token economy is a habit:
   - Ask precise questions.
   - Start fresh chats when topics change.
   - Watch output verbosity.
   - Don't request a full rewrite when a one-line patch will do.
 
-📘 Walkthroughs: [Choose the Right Model](docs/choose-model.md) · [Understand Premium Requests](docs/premium-requests.md)
+📘 Walkthroughs: [Choose the Right Model](docs/choose-model.md) · [Understand AI Credits & Per-Token Pricing](docs/ai-credits.md)
 
 ---
 
 ## Real-World Savings Examples
 
-| Pattern | Optimized Approach | Why it helps |
+| Pattern | Optimized Approach | Why it helps under UBB |
 | --- | --- | --- |
-| Overly broad query: *"Explain everything about X"* | Focused query: *"Show X's key errors and reasons"* | Less irrelevant output and fewer follow-ups |
-| LLM reasoning through a tool step | Direct tool/API call | More deterministic results with fewer retries |
-| Large always-on instructions | On-demand prompts/skills | Keeps always-on instructions concise |
-| Growing chat history kept intact | Truncate or summarize regularly | Caps context, prevents runaway growth |
-| Premium model for trivial tasks | Lighter model for routine work | Multiples cheaper per call |
-| Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Clearer step boundaries and fewer steering prompts |
+| Overly broad query: *"Explain everything about X"* | Focused query: *"Show X's key errors and reasons"* | Drastically fewer **output tokens** (the priciest bucket) |
+| LLM reasoning through a tool step | Direct tool/API call | Avoids many extra model calls and the tokens they generate |
+| Large always-on instructions | On-demand prompts/skills | Keeps input tokens small on every turn |
+| Growing chat history kept intact | `/clear`, new chat, or `/compact` | Caps the running input the model re-reads each turn |
+| Powerful model for trivial tasks | Lightweight model for routine work | Up to ~25× cheaper per token |
+| Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Fewer model calls per task; smaller, focused prompts |
 
 ---
 
@@ -154,7 +174,7 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 | --- | --- |
 | End or reset a chat to drop stale context | [Prune Chat History](docs/prune-history.md) |
 | Pick the cheapest model that fits the task | [Choose the Right Model](docs/choose-model.md) |
-| Understand premium-request multipliers & budgets | [Understand Premium Requests](docs/premium-requests.md) |
+| Understand AI Credits, per-token pricing & budgets | [Understand AI Credits & Per-Token Pricing](docs/ai-credits.md) |
 | Attach only the right files / selections | [Manage Context Attachments](docs/manage-context.md) |
 | Get short, on-target answers | [Ask Focused Questions](docs/focused-questions.md) |
 | Make agents call tools instead of reasoning aloud | [Use Tools & Agents Efficiently](docs/tools-and-agents.md) |
@@ -169,15 +189,15 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 
 Before sending a Copilot Chat message, ask yourself:
 
-- [ ] Am I using the **cheapest model** (or `Auto`) that can answer this?
+- [ ] Am I using the **cheapest model** (or `Auto`) whose per-token pricing matches the value of this answer?
 - [ ] Is my prompt **as short as it can be** without losing meaning?
-- [ ] Have I attached **only the relevant** file/snippet?
+- [ ] Have I attached **only the relevant** file/snippet (not `#codebase` for a narrow question)?
 - [ ] Am I asking **one focused question**, not five?
-- [ ] Have I **constrained the output** (length, format, schema)?
-- [ ] Is this conversation still **on-topic**, or should I start a new chat?
-- [ ] Could a **tool, script, or inline completion** answer this instead?
-- [ ] If this is an agent task, is it **scoped** (small goal, restricted tools)?
+- [ ] Have I **constrained the output** (length, format, schema) to keep output tokens down?
+- [ ] Is this conversation still **on-topic**, or should I start a new chat (or `/compact`)?
+- [ ] Could a **tool, script, or inline completion** answer this without an LLM?
+- [ ] If this is an agent task, is it **scoped** (small goal, restricted tools) so it doesn't loop into a long, token-heavy session?
 
 ---
 
-**Bottom line:** Token efficiency = precision + parsimony. Trim what you send, scope what you ask, and let the right model (or tool) do the right job.
+**Bottom line:** Under UBB, tokens = money. Trim what you send, scope what you ask, shorten what comes back, and let the right model (or tool) do the right job.

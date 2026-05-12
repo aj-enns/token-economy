@@ -1,13 +1,13 @@
 # How-To: Use Tools & Agents Efficiently
 
-Agents shine when they call **tools** to do real work. They waste context and drive extra follow-up prompts when they "think aloud" through what a tool already does.
+Agents shine when they call **tools** to do real work. They waste tokens — and your AI Credits — when they "think aloud" through what a tool already does. Under usage-based billing, every under-the-hood model call in an agent run generates billable input + output tokens.
 
 > **Goal:** prefer tool calls over LLM reasoning, and keep agent chains short.
 
 Primary references:
 
 - Tool picker, tool limits, and best practices in VS Code: https://code.visualstudio.com/docs/copilot/agents/agent-tools
-- Copilot agent-mode billing behavior: https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide
+- Copilot UBB billing model: https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals
 
 ---
 
@@ -80,9 +80,11 @@ A chat request can have a maximum of **128 tools enabled** at a time. If you see
 
 ---
 
-## 7. Remember what is billed in agent mode
+## 7. Remember what is billed in agent mode (UBB)
 
-In Copilot Chat agent mode, **each prompt you enter** counts as one premium request multiplied by the model’s multiplier. Copilot may take follow-up actions to complete your task, but tool calls/background steps are not charged.
+Under **usage-based billing** (starting June 1, 2026), every model call an agent makes generates billable **tokens** — input, output, and cached — converted to AI Credits ([source](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)). A complex agentic session working across a large codebase will consume significantly more than a quick chat question, because it involves many under-the-hood model calls.
+
+> **Compare with the prior model:** under request-based billing, only the prompts *you* entered counted as premium requests; tool calls / background steps in agent mode were not charged. Under UBB, those calls do generate tokens, so keeping the chain short matters more than ever.
 
 ---
 

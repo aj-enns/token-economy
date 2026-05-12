@@ -1,8 +1,8 @@
 # How-To: Ask Focused Questions
 
-Broad prompts produce essays. Focused prompts produce answers. This is one of the easiest token wins available.
+Broad prompts produce essays. Focused prompts produce answers. Under usage-based billing (UBB), **output tokens are the priciest bucket** — typically ~4–8× the input rate — so constraining what comes back is one of the highest-leverage levers you have.
 
-> **Goal:** small, precise input → small, precise output.
+> **Goal:** small, precise input → small, precise output → fewer AI Credits per answer.
 
 ---
 
@@ -33,7 +33,7 @@ Cap response length explicitly:
 
 ## 3. Break "kitchen-sink" prompts into steps
 
-Don't bundle five unrelated tasks into one message. You'll pay for a long answer that mixes them awkwardly.
+Don't bundle five unrelated tasks into one message. You'll get a long answer that mixes them awkwardly — and pay for every token of that long answer.
 
 ❌ One mega-prompt:
 
@@ -50,7 +50,7 @@ and explain the design.
 3. Write tests for the refactored function.
 ```
 
-You only pay for what you actually need at each step.
+You only pay for what you actually need at each step, and each step's output is shorter.
 
 ---
 
@@ -75,7 +75,7 @@ Many slash commands implicitly focus the model:
 - `/fix` — focused on the diagnostic / selection
 - `/tests` — focused on generating tests for the selection
 
-These are cheaper than free-form prompts because they bound the input and the expected output.
+These are cheaper than free-form prompts because they bound both the input and the expected output — directly limiting tokens on both sides.
 
 ![Slash command suggestions](images/slash-commands.png)
 > 📸 **Screenshot needed:** `docs/images/slash-commands.png` — chat input showing the `/` suggestion popup.

@@ -1,6 +1,6 @@
 # How-To: Manage Context Attachments
 
-Adding files, selections, and terminal output as context can make Copilot more accurate, but it can also make chats noisier. Keep attachments focused and remove them when they’re no longer relevant.
+Under usage-based billing (UBB), attached files, selections, and terminal output are sent to the model as **input tokens** — and they stay in the conversation until you remove them. Adding the right context makes Copilot more accurate; adding too much directly grows your AI Credits bill.
 
 > **Goal:** attach only what's needed, and remove it when done.
 
@@ -66,7 +66,7 @@ If you've already shared context earlier in the same chat, refer back to it:
 
 Sometimes the cheapest "context" is no context — let a tool fetch what it needs:
 
-- A search/grep tool can find a symbol faster (and cheaper) than attaching ten files.
+- A search/grep tool can find a symbol faster (and with fewer input tokens) than attaching ten files.
 - A terminal command's output is one line in chat instead of a 200-line attachment.
 
 ---
