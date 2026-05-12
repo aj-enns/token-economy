@@ -106,7 +106,8 @@ For Copilot Chat in the browser:
 - Hover a thread → click the **⋯ menu** → **Delete**.
 - Or click **New chat** at the top.
 
-![Browser chat delete menu](images/github-com-delete.png)
+
+<img src="images/github-com-delete.png" alt="Browser chat delete menu" height="600">
 
 
 ---
