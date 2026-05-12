@@ -107,7 +107,7 @@ For Copilot Chat in the browser:
 - Or click **New chat** at the top.
 
 
-<img src="docs/images/github-com-delete.png" alt="Browser chat delete menu" height="600">
+<img src="images/github-com-delete.png" alt="Browser chat delete menu" height="600">
 
 
 ---
