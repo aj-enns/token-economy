@@ -53,7 +53,7 @@ Press **Enter**. The conversation is reset; the panel stays open.
 
 ## 4. Remove attached context (files, selections, problems)
 
-Files and selections you've attached are sent on **every turn** until you remove them.
+Files and selections you've attached can keep influencing the conversation until you remove them.
 
 **VS Code:**
 

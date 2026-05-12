@@ -8,8 +8,8 @@ GitHub Copilot's usage-based billing (UBB) meters **premium requests** for many 
 
 ## 1. What is a premium request?
 
-- Every plan (Free, Pro, Pro+, Business, Enterprise) ships with a **monthly allowance** of premium requests (e.g. 300, 1,500, 1,000…).
-- Each chat turn / agent step consumes premium-request "units" based on the **model multiplier**.
+- Each Copilot plan includes a **monthly allowance** of premium requests (see the plan table for current amounts).
+- In Copilot Chat (including agent and plan modes), **each prompt you enter** counts as one premium request multiplied by the model’s rate.
 - Overage is purchased at a flat per-request rate ($0.04/request at time of writing).
 
 Inline suggestions are metered differently from Chat. Copilot Free includes a monthly limit for real-time code suggestions, while paid plans include real-time code suggestions with included models.
@@ -25,7 +25,7 @@ Multipliers change over time and by plan, but the **tier rule** is stable:
 | Tier | Typical models | Use for |
 | --- | --- | --- |
 | **Included / lowest multiplier** | GPT-5 mini, Claude Haiku, Grok Code Fast, Raptor mini, GPT-4.1 | Renames, syntax help, doc Q&A, simple edits |
-| **Mid** | GPT-5.2 / 5.4-mini, Claude Sonnet, Gemini Flash | Single-file edits, small refactors, tests |
+| **Mid** | GPT-5.2, GPT-5.4 mini, Claude Sonnet, Gemini Flash | Single-file edits, small refactors, tests |
 | **Premium** (high multiplier) | GPT-5.4 / 5.5, Claude Opus, Gemini Pro | Multi-file refactors, architectural design, deep debugging |
 
 To see the exact multipliers, refer to the model multipliers table in GitHub’s billing docs.
@@ -61,7 +61,7 @@ Mitigations:
 
 Both individuals and organizations can cap overage spending:
 
-- In your **GitHub billing settings**, set a **Copilot premium request budget** (or set the limit to $0 to disable overage).
+- In your **GitHub billing settings**, set a **budget** for premium requests and enable **Stop usage when budget limit is reached** (if available) to block additional usage.
 - Organizations can centrally manage per-user allowances and policy.
 
 This is your safety net — turn it on **before** you experiment with agent mode.

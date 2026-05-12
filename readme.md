@@ -16,7 +16,6 @@ A practical guide to reducing waste and controlling spend when using GitHub Copi
 - [Strategy 3 — Ask Focused Questions](#strategy-3--ask-focused-questions)
 - [Strategy 4 — Orchestrate Tools & Agents Efficiently](#strategy-4--orchestrate-tools--agents-efficiently)
 - [Strategy 5 — Pick the Right Model & Build Good Habits](#strategy-5--pick-the-right-model--build-good-habits)
-- [Strategy 6 — Pull Platform-Level Levers (Caching, Batch, Scoped Agents)](#strategy-6--pull-platform-level-levers-caching-batch-scoped-agents)
 - [Real-World Savings Examples](#real-world-savings-examples)
 - [Walkthroughs (How-To Docs)](#walkthroughs-how-to-docs)
 - [Checklist for Engineers](#checklist-for-engineers)
@@ -27,7 +26,6 @@ A practical guide to reducing waste and controlling spend when using GitHub Copi
 
 For GitHub Copilot Chat in an IDE, cost is tracked as **premium requests**: each prompt you enter counts as one premium request, multiplied by the selected model’s multiplier. In agent mode, Copilot may take follow-up actions to complete your task, but those tool calls/background steps are not charged.
 
-If you call models directly via API (Azure OpenAI / Foundry / other model APIs), cost is typically token-based, and techniques like prompt caching and batch processing can materially change pricing.
 
 ---
 
@@ -108,13 +106,14 @@ If you only do five things, do these:
 - **Prefer real tools over LLM reasoning.** If a query, API, or built-in skill exists, call it directly. Don't ask the model to "think aloud" through what a tool would just answer.
 - **Minimize chain-of-thought steps.** Each planning/reflection step is another model call. If one good prompt does the job, prefer that over a multi-step chain.
 - **Split monolithic agents.** A single agent loaded with every domain rule pays for that whole prompt on every call. Specialized sub-agents/skills with smaller prompts only pull weight when invoked.
+- **Scope your agents.** Use custom agents (`.agent.md`) and Plan → Start Implementation to reduce iteration and keep workflows predictable.
 - **Offload deterministic steps.** Use plain code/logic for anything that doesn't actually need an LLM.
 
 ### Example
 
 When a tool exists for a deterministic step, using the tool directly avoids unnecessary back-and-forth.
 
-📘 Walkthrough: [Use Tools & Agents Efficiently](docs/tools-and-agents.md)
+📘 Walkthroughs: [Use Tools & Agents Efficiently](docs/tools-and-agents.md) · [Scoped Agents & Handoffs](docs/scoped-agents.md)
 
 ---
 
@@ -134,19 +133,6 @@ When a tool exists for a deterministic step, using the tool directly avoids unne
 
 ---
 
-## Strategy 6 — Pull Platform-Level Levers (Caching, Batch, Scoped Agents)
-
-**Goal:** stack discounts the platform already offers — they compound with everything above.
-
-- **API-only: Win prompt caching.** On Azure OpenAI / Foundry, prompt caching requires a minimum prompt length and an identical prefix; cache hits can occur in 128-token increments after the first 1,024 tokens match.
-- **API-only: Use the Batch API for async work.** Azure OpenAI batch targets 24-hour turnaround and is priced lower than global standard for supported deployments.
-- **Scope your agents (Copilot / VS Code).** Use custom agents (`.agent.md`) and Plan → Start Implementation to reduce iteration and keep workflows predictable.
-- **Unify instructions.** If you use multiple AI tools, keep always-on instructions concise and avoid duplicating the same guidance in multiple instruction files.
-
-📘 Walkthroughs: [Win with Prompt Caching](docs/prompt-caching.md) · [Use the Batch API for 50% Off](docs/batch-and-async.md) · [Scoped Agents & Handoffs](docs/scoped-agents.md)
-
----
-
 ## Real-World Savings Examples
 
 | Pattern | Optimized Approach | Why it helps |
@@ -156,8 +142,6 @@ When a tool exists for a deterministic step, using the tool directly avoids unne
 | Large always-on instructions | On-demand prompts/skills | Keeps always-on instructions concise |
 | Growing chat history kept intact | Truncate or summarize regularly | Caps context, prevents runaway growth |
 | Premium model for trivial tasks | Lighter model for routine work | Multiples cheaper per call |
-| API prompt with dynamic system message first | Stable prefix first, user query last (cache-friendly) | Cached-input discount on every repeat call (up to 100% on PTU) |
-| Bulk evaluation on Global Standard | Run on Global Batch (24-hour SLO) | **50% off** input + output token pricing |
 | Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Clearer step boundaries and fewer steering prompts |
 
 ---
@@ -176,8 +160,6 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 | Make agents call tools instead of reasoning aloud | [Use Tools & Agents Efficiently](docs/tools-and-agents.md) |
 | Build planner→implementer agent handoffs | [Scoped Agents & Handoffs](docs/scoped-agents.md) |
 | Move boilerplate out of every prompt | [Externalize Custom Instructions](docs/custom-instructions.md) |
-| Earn the cached-input discount on API calls | [Win with Prompt Caching](docs/prompt-caching.md) |
-| Run bulk workloads at 50% off | [Use the Batch API for 50% Off](docs/batch-and-async.md) |
 
 > Screenshots live in [`docs/images/`](docs/images/README.md). The how-to docs reference them by filename — drop matching PNGs in to enable inline images.
 
@@ -195,8 +177,6 @@ Before sending a Copilot Chat message, ask yourself:
 - [ ] Is this conversation still **on-topic**, or should I start a new chat?
 - [ ] Could a **tool, script, or inline completion** answer this instead?
 - [ ] If this is an agent task, is it **scoped** (small goal, restricted tools)?
-- [ ] If I'm calling an API directly, is the **stable prefix first** so prompt caching can hit?
-- [ ] If this is bulk / overnight work, am I using **Batch API** for 50% off?
 
 ---
 

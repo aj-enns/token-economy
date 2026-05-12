@@ -1,6 +1,6 @@
 # How-To: Manage Context Attachments
 
-Every file, selection, or terminal output you attach is sent on **every turn** until you remove it. Lean attachments = lean bills.
+Adding files, selections, and terminal output as context can make Copilot more accurate, but it can also make chats noisier. Keep attachments focused and remove them when they’re no longer relevant.
 
 > **Goal:** attach only what's needed, and remove it when done.
 

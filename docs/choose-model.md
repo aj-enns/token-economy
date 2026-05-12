@@ -25,9 +25,9 @@ In Copilot Chat, different models consume premium requests at different multipli
 
 | Task | Suggested tier |
 | --- | --- |
-| Renames, syntax help, doc lookups, simple Q&A | **Light** (e.g. GPT-4.1-mini, Haiku-class) |
+| Renames, syntax help, doc lookups, simple Q&A | **Light** (e.g. GPT-5 mini, Haiku-class) |
 | Single-file edits, small refactors, test scaffolding | **Mid** (e.g. GPT-4.1, Sonnet-class) |
-| Multi-file refactors, architectural design, deep debugging | **Premium** (e.g. GPT-5, Opus-class) |
+| Multi-file refactors, architectural design, deep debugging | **Premium** (e.g. GPT-5.4 / 5.5, Opus-class) |
 | Repetitive code completions while typing | **Inline suggestions** (limited on Copilot Free) |
 
 > Names change over time — apply the *tier* rule, not specific model names.

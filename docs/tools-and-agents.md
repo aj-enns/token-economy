@@ -1,6 +1,6 @@
 # How-To: Use Tools & Agents Efficiently
 
-Agents shine when they call **tools** to do real work. They burn tokens when they "think aloud" through what a tool already does.
+Agents shine when they call **tools** to do real work. They waste context and drive extra follow-up prompts when they "think aloud" through what a tool already does.
 
 > **Goal:** prefer tool calls over LLM reasoning, and keep agent chains short.
 
