@@ -123,6 +123,8 @@ If you only do five things, do these:
 **Goal:** stop making the LLM do work a tool can do directly. Under UBB, every under-the-hood model call in an agent run generates billable tokens — long agentic sessions can consume far more than a single chat.
 
 - **Prefer real tools over LLM reasoning.** If a query, API, or built-in skill exists, call it directly. Don't ask the model to "think aloud" through what a tool would just answer.
+- **Prune unused MCP tools.** Every enabled tool's name + JSON schema is re-sent on every turn. A ~40-tool MCP server can add 10–15 KB of schema per call; removing the ones the agent never invokes saved GitHub's team several thousand tokens per workflow run with no behavior change ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)).
+- **Prefer a CLI over MCP for data fetching.** Calling `gh pr diff`, `az ... --output json`, or `kubectl get ... -o json` is a deterministic HTTP request — no LLM round-trip, no tool-schema overhead in context. Reserve MCP tools for steps that actually need the model to interpret or decide ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)).
 - **Minimize chain-of-thought steps.** Each planning/reflection step is another model call generating more tokens. If one good prompt does the job, prefer that over a multi-step chain.
 - **Split monolithic agents.** A single agent loaded with every domain rule re-sends that whole prompt on every call. Specialized sub-agents and skills with smaller prompts only pull weight when invoked.
 - **Scope your agents.** Use custom agents (`.agent.md`) and Plan → Start Implementation so each step has a small goal and a restricted tool set.
@@ -163,6 +165,8 @@ When a tool exists for a deterministic step, using the tool directly avoids many
 | Growing chat history kept intact | `/clear`, new chat, or `/compact` | Caps the running input the model re-reads each turn |
 | Powerful model for trivial tasks | Lightweight model for routine work | Up to ~25× cheaper per token |
 | Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Fewer model calls per task; smaller, focused prompts |
+| 40-tool MCP server enabled, only 2 tools used | Prune unused MCP tools / disable whole MCP servers | Removes 8–12 KB of schema re-sent on **every** turn ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)) |
+| Agent calls an MCP tool to fetch a PR diff / file contents / logs | Run `gh pr diff` / `az ... --output json` / `kubectl get ... -o json` and feed the result to the agent | Replaces an LLM reasoning round-trip with a deterministic HTTP request ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)) |
 
 ---
 

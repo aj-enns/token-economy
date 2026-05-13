@@ -80,7 +80,51 @@ A chat request can have a maximum of **128 tools enabled** at a time. If you see
 
 ---
 
-## 7. Remember what is billed in agent mode (UBB)
+## 7. Prune unused MCP tools (huge inefficiency)
+
+Because LLM APIs are stateless, agent runtimes typically **re-send every enabled tool's name and JSON schema with every request**. For a GitHub-style MCP server with ~40 tools, that can add **10–15 KB of schema per turn**. If the agent only ever calls 2 of them, the other 38 are pure overhead on every call ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)).
+
+The GitHub Next team measured this on production agentic workflows: removing unused MCP tool registrations reduced per-call context by **8–12 KB**, saving **several thousand tokens per run** with no change in behavior. In one workflow (Smoke Claude), aggressive MCP pruning combined with a model-tier switch drove a **−79% token reduction**.
+
+**What to do:**
+
+- Start with a full tool-set if you must, then **prune to the narrow set the agent actually calls**. Audit which tools are invoked vs. registered.
+- In VS Code, **disable whole MCP servers** you don't need for this chat in the tools picker — not just individual tools.
+- For custom agents, set an explicit `tools:` allowlist in `.agent.md` rather than inheriting the workspace default.
+- 🚩 Watch for a tool registered but **called zero times** across runs — it's costing you on every turn for no benefit.
+
+> **Counter-example:** removing 8 unused GitHub MCP tools from one workflow yielded **no measurable ET savings** because the tool manifests were a small fraction of that workflow's context. Pruning helps most when tool schemas are a meaningful share of input tokens — measure before/after.
+
+---
+
+## 8. Prefer a CLI over MCP for data fetching
+
+Removing unused tools is the cheap win. The bigger structural win for repetitive workflows is **replacing MCP data-fetch calls with CLI calls** ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)).
+
+Why MCP is expensive for plain data retrieval:
+
+- An MCP tool call is **a reasoning step on top of the data fetch**. The model has to decide to call it, formulate arguments, and consume the response as context — a full LLM round-trip that bills input + output tokens for the tool-use schema, the arg block, and the result.
+- A CLI call (`gh pr diff`, `az ... --output json`, `kubectl get ... -o json`) is a **deterministic HTTP request with no LLM involvement**.
+
+Two patterns the GitHub team uses:
+
+1. **Pre-fetch before the agent starts.** If you always need a PR diff, the list of changed files, recent logs, etc., run a `gh` / `az` / `kubectl` command in a setup step and write the result to a workspace file. The agent reads the file instead of making an MCP call. Removes the tool-call overhead entirely and lets the agent use its strong shell/text-processing training on the static artifact.
+2. **In-agent CLI substitution** for runtime-determined fetches. When the agent decides at runtime what to pull, point it at the CLI (`gh pr view --json`, etc.) instead of an MCP tool that does the same thing. Same data, no schema overhead in context, no extra reasoning step.
+
+**Rule of thumb:**
+
+| Task | Prefer |
+| --- | --- |
+| Deterministic data fetch (diff, file contents, issue body, logs, resource list) | **CLI** (`gh`, `az`, `kubectl`, `git`, …) |
+| Action that requires the model to interpret/decide (triage, summarize, route) | **MCP tool** or model reasoning |
+| Data you'll always need | **Pre-fetch** before the agent runs |
+| Data the agent picks at runtime | **CLI inside the agent**, not MCP |
+
+The principle: **the cheapest LLM call is the one you don't make**. Move deterministic reads out of the LLM reasoning loop.
+
+---
+
+## 9. Remember what is billed in agent mode (UBB)
 
 Under **usage-based billing** (starting June 1, 2026), every model call an agent makes generates billable **tokens** — input, output, and cached — converted to AI Credits ([source](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)). A complex agentic session working across a large codebase will consume significantly more than a quick chat question, because it involves many under-the-hood model calls.
 
@@ -88,7 +132,7 @@ Under **usage-based billing** (starting June 1, 2026), every model call an agent
 
 ---
 
-## 8. Offload deterministic work to plain code
+## 10. Offload deterministic work to plain code
 
 Anything that doesn't need an LLM, shouldn't use one:
 
