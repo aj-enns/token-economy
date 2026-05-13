@@ -8,17 +8,22 @@ A practical guide to controlling spend when using GitHub Copilot Chat and agents
 
 ## Table of Contents
 
-- [How UBB Bills Copilot](#how-ubb-bills-copilot)
-- [Quick Wins (Start Here)](#quick-wins-start-here)
-- [Key Cost Drivers](#key-cost-drivers)
-- [Strategy 1 — Trim Prompt Overhead](#strategy-1--trim-prompt-overhead)
-- [Strategy 2 — Manage Memory & Context](#strategy-2--manage-memory--context)
-- [Strategy 3 — Ask Focused Questions (Shrink Output)](#strategy-3--ask-focused-questions-shrink-output)
-- [Strategy 4 — Orchestrate Tools & Agents Efficiently](#strategy-4--orchestrate-tools--agents-efficiently)
-- [Strategy 5 — Pick the Right Model & Build Good Habits](#strategy-5--pick-the-right-model--build-good-habits)
-- [Real-World Savings Examples](#real-world-savings-examples)
-- [Walkthroughs (How-To Docs)](#walkthroughs-how-to-docs)
-- [Checklist for Engineers](#checklist-for-engineers)
+- [Token Economy: Optimizing GitHub Copilot Chat \& Agents under Usage-Based Billing](#token-economy-optimizing-github-copilot-chat--agents-under-usage-based-billing)
+  - [Table of Contents](#table-of-contents)
+  - [How UBB Bills Copilot](#how-ubb-bills-copilot)
+  - [Quick Wins (Start Here)](#quick-wins-start-here)
+  - [Key Cost Drivers](#key-cost-drivers)
+  - [Strategy 1 — Trim Prompt Overhead](#strategy-1--trim-prompt-overhead)
+  - [Strategy 2 — Manage Memory \& Context](#strategy-2--manage-memory--context)
+  - [Strategy 3 — Ask Focused Questions (Shrink Output)](#strategy-3--ask-focused-questions-shrink-output)
+    - [Example](#example)
+  - [Strategy 4 — Orchestrate Tools \& Agents Efficiently](#strategy-4--orchestrate-tools--agents-efficiently)
+    - [Example](#example-1)
+  - [Strategy 5 — Pick the Right Model \& Build Good Habits](#strategy-5--pick-the-right-model--build-good-habits)
+  - [Real-World Savings Examples](#real-world-savings-examples)
+  - [Walkthroughs (How-To Docs)](#walkthroughs-how-to-docs)
+  - [Checklist for Engineers](#checklist-for-engineers)
+  - [Tools and Extensions](#tools-and-extensions)
 
 ---
 
@@ -204,4 +209,10 @@ Before sending a Copilot Chat message, ask yourself:
 
 ---
 
+## Tools and Extensions
+
+- [Chat Customizations Evaluations](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-chat-customizations-evaluations) — VS Code extension for evaluating and iterating on Copilot Chat customizations (instructions, prompts, and agents).
+
+---
+  
 **Bottom line:** Under UBB, tokens = money. Trim what you send, scope what you ask, shorten what comes back, and let the right model (or tool) do the right job.
