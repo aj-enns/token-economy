@@ -54,7 +54,7 @@ You are generating release notes. Group changes under
 Invoke it on demand from the chat input — its tokens only count on the turns you actually run it.
 
 ![Prompt file picker](images/prompt-file-picker.png)
-> 📸 **Screenshot needed:** `docs/images/prompt-file-picker.png` — chat input showing the prompt-file picker.
+
 
 ---
 
