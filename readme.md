@@ -81,13 +81,13 @@ You can't optimize what you don't understand. A few non-obvious mechanics drive 
 
 ## Quick Wins (Start Here)
 
-If you only do five things, do these:
+If you only do five things, do these — they raise quality *and* cut tokens at the same time:
 
-1. **Use the cheapest model that meets the bar.** Per-token prices span roughly 25× across the lineup. → [How](docs/choose-model.md)
-2. **Ask narrow questions to keep output short.** Under UBB, output tokens are priced ~4–8× higher than input tokens. → [How](docs/focused-questions.md)
-3. **Start a new chat** when topics change — old turns get re-sent as input tokens on every reply. → [How](docs/prune-history.md)
-4. **Skip Chat for trivial code.** Inline suggestions and next edit suggestions don't draw AI Credits at all on paid plans. → [How](docs/choose-model.md#4-use-inline-suggestions-for-everyday-code)
-5. **Let tools do deterministic work.** Each agent step is more tokens; a single tool call costs much less than several rounds of reasoning. → [How](docs/tools-and-agents.md)
+1. **Right-size the model.** Use the cheapest model that meets the bar (prices span ~25×); save reasoning models for planning and hard problems, not typo fixes. → [How](docs/choose-model.md)
+2. **Give clear, focused guidance.** Precise prompts with explicit scope and stop signals steer the agent right the first time and keep output short (output tokens cost ~4–8× input). → [How](docs/focused-questions.md)
+3. **Work in phases and start fresh.** Split work into Research → Plan → Implement with a new context window per task, so stale context can't drift or re-bill on every turn. → [How](docs/research-plan-implement.md)
+4. **Add deterministic guardrails.** Tests, linters, and scanners catch agent errors before they compound — turning a future incident into an early, cheap correction. → [How](docs/deterministic-guardrails.md)
+5. **Keep a concise, human-written `copilot-instructions.md`.** Capture your non-negotiables and recurring agent misses, and tell it to be concise to trim output. → [How](docs/custom-instructions.md)
 
 ---
 
