@@ -1,6 +1,6 @@
 # How-To: Add Deterministic Guardrails
 
-LLMs are non-deterministic — in a long agent run, small per-step errors compound (a 50-step workflow at 95%/step lands near 8% — see [Quality Economics](quality-economics.md)). The most powerful counter is a **deterministic control**: something that either passes or fails, every time, with no model judgment involved. Tests are the canonical example.
+LLMs are non-deterministic, so every step in an agent run has some chance of being wrong — and across a multi-step task those odds *multiply*, they don't average. A run that's right only if all 50 steps are right has a success rate of (step accuracy)⁵⁰: ~60% at 99%/step, collapsing to ~8% at 95%/step (see [Quality Economics](quality-economics.md)). The most powerful counter is a **deterministic control**: something that either passes or fails, every time, with no model judgment involved. Tests are the canonical example.
 
 > **Goal:** give the agent objective checkpoints that catch errors *early*, before they stack into an incident.
 
