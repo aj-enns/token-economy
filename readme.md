@@ -58,7 +58,7 @@ Sources: [Usage-based billing for individuals](https://docs.github.com/en/copilo
 The instinct under UBB is to ask *"how do we spend fewer tokens?"* That's the wrong first question. Optimizing cost while an agent's output value is near zero is wasted effort — and the worst token waste (bloated context, sprawling chats, vague prompts that need re-runs) is a **quality** problem first and a cost problem second.
 
 - **Fix quality and spend drops with it.** Trimming irrelevant context is the single biggest lever for *both* better answers and lower bills.
-- **Errors compound.** LLMs are non-deterministic; in a 50-step workflow, even 99%/step lands at ~60% — and 95%/step at ~8%. Every point of per-step quality dramatically raises the odds the whole run succeeds, and every miss re-bills tokens plus fixes, reviews, and human time.
+- **Errors compound.** LLMs are non-deterministic, so every step in an agent run has some chance of being wrong — and across a multi-step task those odds *multiply*, they don't average. A run that's right only if all 50 steps are right has a success rate of (step accuracy)⁵⁰: at **99%/step that's ~60%**, and at **95%/step it collapses to ~8%**. So a tiny drop in per-step quality tanks the whole run, and small quality gains pay off hugely. Every miss also re-bills tokens plus fixes, reviews, and human time.
 - **Effort should scale with maturity.** If you run a handful of agents a day, the [Quick Wins](#quick-wins-start-here) are enough. If you orchestrate dozens or hundreds, every percent compounds across the fleet.
 
 > **Instead of counting tokens, make every token count.** Send fewer, higher-accuracy runs and the fuel savings follow.
