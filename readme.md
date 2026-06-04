@@ -11,6 +11,8 @@ A practical guide to controlling spend when using GitHub Copilot Chat and agents
 - [Token Economy: Optimizing GitHub Copilot Chat \& Agents under Usage-Based Billing](#token-economy-optimizing-github-copilot-chat--agents-under-usage-based-billing)
   - [Table of Contents](#table-of-contents)
   - [How UBB Bills Copilot](#how-ubb-bills-copilot)
+  - [Why Quality Beats Cost (Read This First)](#why-quality-beats-cost-read-this-first)
+  - [Foundations: How Agents \& Context Windows Work](#foundations-how-agents--context-windows-work)
   - [Quick Wins (Start Here)](#quick-wins-start-here)
   - [Key Cost Drivers](#key-cost-drivers)
   - [Strategy 1 — Trim Prompt Overhead](#strategy-1--trim-prompt-overhead)
@@ -48,6 +50,32 @@ When the allowance is exhausted, additional usage is billed at per-token rates (
 > **Was it different before?** Yes. Before June 1, 2026, Copilot used **request-based billing** — each prompt counted as one *premium request* multiplied by a model multiplier. Under UBB, multipliers go away (except for legacy annual subscribers who stay on request-based billing), and **the actual token volume** of every interaction is what determines cost.
 
 Sources: [Usage-based billing for individuals](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals) · [Usage-based billing for organizations and enterprises](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises) · [Models and pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
+
+---
+
+## Why Quality Beats Cost (Read This First)
+
+The instinct under UBB is to ask *"how do we spend fewer tokens?"* That's the wrong first question. Optimizing cost while an agent's output value is near zero is wasted effort — and the worst token waste (bloated context, sprawling chats, vague prompts that need re-runs) is a **quality** problem first and a cost problem second.
+
+- **Fix quality and spend drops with it.** Trimming irrelevant context is the single biggest lever for *both* better answers and lower bills.
+- **Errors compound.** LLMs are non-deterministic; in a 50-step workflow, even 99%/step lands at ~60% — and 95%/step at ~8%. Every point of per-step quality dramatically raises the odds the whole run succeeds, and every miss re-bills tokens plus fixes, reviews, and human time.
+- **Effort should scale with maturity.** If you run a handful of agents a day, the [Quick Wins](#quick-wins-start-here) are enough. If you orchestrate dozens or hundreds, every percent compounds across the fleet.
+
+> **Instead of counting tokens, make every token count.** Send fewer, higher-accuracy runs and the fuel savings follow.
+
+📘 Walkthroughs: [Think in Quality Economics](docs/quality-economics.md) · [Add Deterministic Guardrails](docs/deterministic-guardrails.md)
+
+---
+
+## Foundations: How Agents & Context Windows Work
+
+You can't optimize what you don't understand. A few non-obvious mechanics drive most token waste:
+
+- **Agents are stateless.** An agent (the *harness* — VS Code Chat, Copilot CLI, cloud agent, Claude Code, Codex) talks to a stateless LLM on your behalf, many times per task. "Having a conversation" means **re-sending the entire ordered history on every turn** — so tokens compound with each loop.
+- **Models don't read the window evenly.** They bias toward the **beginning** and **end** and discount the **middle** ("context rot"). Below ~50% full you get *Lost in the Middle*; above ~50% **recency bias** kicks in and the model starts forgetting your original goal.
+- **Practical rules:** use a **new context window per distinct task**, and try to keep working sessions under **~60–70%** of the window.
+
+📘 Walkthroughs: [How Context Windows Work](docs/context-windows.md) · [Agent Configs Explained](docs/agent-configs.md)
 
 ---
 
@@ -181,14 +209,21 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 
 | Goal | Walkthrough |
 | --- | --- |
+| Understand why quality (not cost) is the right first lever | [Think in Quality Economics](docs/quality-economics.md) |
+| Understand how harnesses, the stateless LLM & token loops work | [How Context Windows Work](docs/context-windows.md) |
 | End or reset a chat to drop stale context | [Prune Chat History](docs/prune-history.md) |
 | Pick the cheapest model that fits the task | [Choose the Right Model](docs/choose-model.md) |
 | Understand AI Credits, per-token pricing & budgets | [Understand AI Credits & Per-Token Pricing](docs/ai-credits.md) |
 | Attach only the right files / selections | [Manage Context Attachments](docs/manage-context.md) |
 | Get short, on-target answers | [Ask Focused Questions](docs/focused-questions.md) |
+| Split work into fresh windows per phase | [Research → Plan → Implement](docs/research-plan-implement.md) |
+| Counter compounding errors with tests & linters | [Add Deterministic Guardrails](docs/deterministic-guardrails.md) |
 | Make agents call tools instead of reasoning aloud | [Use Tools & Agents Efficiently](docs/tools-and-agents.md) |
 | Build planner→implementer agent handoffs | [Scoped Agents & Handoffs](docs/scoped-agents.md) |
 | Move boilerplate out of every prompt | [Externalize Custom Instructions](docs/custom-instructions.md) |
+| Know which config to use (instructions, agents, skills, MCPs, subagents…) | [Agent Configs Explained](docs/agent-configs.md) |
+| Squeeze static-token overhead at scale | [Power-User Token Tips](docs/power-user-tips.md) |
+| Build durable habits for agentic development | [Future-Proof Your Skills](docs/future-proofing.md) |
 
 > Screenshots live in [`docs/images/`](docs/images/README.md). The how-to docs reference them by filename — drop matching PNGs in to enable inline images.
 
@@ -206,6 +241,7 @@ Before sending a Copilot Chat message, ask yourself:
 - [ ] Is this conversation still **on-topic**, or should I start a new chat (or `/compact`)?
 - [ ] Could a **tool, script, or inline completion** answer this without an LLM?
 - [ ] If this is an agent task, is it **scoped** (small goal, restricted tools) so it doesn't loop into a long, token-heavy session?
+- [ ] Are there **deterministic guardrails** (tests, linters, scanners) in place so the agent catches its own errors before they compound?
 
 ---
 
