@@ -46,7 +46,7 @@ You're now a **context engineer**, and this is ongoing work, not a one-off:
 
 - Treat agent misses like **incidents** — investigate the cause and fix the config.
 - Keep `copilot-instructions.md`, custom agents, and skills **fresh**; recreate them periodically as your project and the models change (see [Agent Configs Explained](agent-configs.md)).
-- Use `/chronicle` in the CLI regularly to understand where your prompting can improve (see [Power-User Tips](power-user-tips.md)).
+- Use `/chronicle tips` and `/chronicle cost-tips` in the CLI regularly to understand where your prompting and spend can improve (see [Power-User Tips](power-user-tips.md)).
 
 Approach AI agents with an engineering mind: set them up for success consistently, and measure whether you're succeeding.
 

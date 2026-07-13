@@ -12,7 +12,7 @@ Under usage-based billing (UBB), each Copilot model has its own **per-token pric
 
 - At the bottom of the Chat input, click the **model picker** (shows current model name).
 - Pick a lightweight model for routine work, a powerful one for hard problems.
-- For mixed-complexity sessions, choose **`Auto`** — [Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) picks based on real-time system health. On paid plans still on request-based billing, Auto also gets a 10% multiplier discount.
+- For mixed-complexity sessions, choose **`Auto`** — [Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) picks a capable model based on the intent of your task. On any **paid** Copilot plan, Auto also earns a **10% discount on model costs** ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)), and it protects your cache by only switching models at natural boundaries (see [Preserve the Cache](preserve-cache.md)).
 
 ![Model picker in the Chat input](images/model-picker.png)
 
@@ -25,9 +25,9 @@ Under usage-based billing (UBB), each Copilot model has its own **per-token pric
 
 | Task | Suggested tier | Example models |
 | --- | --- | --- |
-| Renames, syntax help, doc lookups, simple Q&A | **Lightweight** | GPT-5 mini, Gemini 3 Flash, Grok Code Fast 1, Claude Haiku |
-| Single-file edits, small refactors, test scaffolding | **Versatile** | GPT-4.1, GPT-5.4 mini, Claude Sonnet |
-| Multi-file refactors, architectural design, deep debugging | **Powerful** | GPT-5.4 / 5.5, Claude Opus, Gemini Pro |
+| Renames, syntax help, doc lookups, simple Q&A | **Lightweight** | GPT-5 mini, GPT-5.6 Luna, Gemini 3 Flash, MAI-Code-1-Flash, Claude Haiku, Kimi K2.7 |
+| Single-file edits, small refactors, test scaffolding | **Versatile** | GPT-5.4 mini, GPT-5.6 Terra, Claude Sonnet, Raptor mini |
+| Multi-file refactors, architectural design, deep debugging | **Powerful** | GPT-5.5, GPT-5.6 Sol, Claude Opus, Gemini Pro |
 | Repetitive code completions while typing | **Inline suggestions / next edit suggestions** | (Not billed in AI Credits on paid plans) |
 
 > Names change over time — apply the *tier* rule, not specific model names. See [Models and pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing) for current per-token rates.
@@ -42,9 +42,25 @@ Workflow:
 2. If the answer is wrong or shallow, escalate to a **versatile** or **powerful** model in the same chat (the model picker switches mid-conversation).
 3. Note the pattern — next time, start at the right tier.
 
+> ⚠️ **Cache trade-off:** escalating mid-chat switches models, which invalidates the session cache and re-bills the full context at input price. For a quick one-off that's fine; if you know a task is hard, start a **fresh session** on the stronger model instead. See [Preserve the Cache](preserve-cache.md).
+
 ---
 
-## 4. Use inline suggestions for everyday code
+## 4. Match the reasoning level to the task
+
+Some models support **configurable reasoning levels** — how much the model reasons before it responds. A higher level can improve hard problems, but it **consumes more tokens (and credits)**, so use the regular level by default and raise it only for genuinely difficult tasks. Configurable reasoning is available in **VS Code and Copilot CLI** for supported models ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)).
+
+> Set the reasoning level (and context size) **before** you start a session — changing it mid-session invalidates the cache. See [Preserve the Cache](preserve-cache.md).
+
+---
+
+## 5. Run subagents on cheaper models
+
+Subagents run in their own session and don't inherit the main agent's conversation history. Because their context is scoped to a single focused task, a **lighter model is often enough** — and assigning one doesn't disturb the main agent's cache the way a mid-session model switch would ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)). Pair a strong planner with cheap, focused implementer/research subagents. See [Scoped Agents & Handoffs](scoped-agents.md).
+
+---
+
+## 6. Use inline suggestions for everyday code
 
 Inline ghost-text completions (the gray suggestions while you type) are a **separate surface** from Chat — and they are **not billed in AI Credits** on paid plans ([source](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing#code-completions)).
 
@@ -58,7 +74,7 @@ For routine code, accept inline suggestions instead of opening Chat — it doesn
 
 ---
 
-## 5. Set a default model per workspace (optional)
+## 7. Set a default model per workspace (optional)
 
 VS Code remembers the last-used model per chat. If your workspace is mostly routine, leaving the default on a lightweight model (or `Auto`) nudges you toward cheaper-per-token calls.
 
