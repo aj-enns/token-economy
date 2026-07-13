@@ -37,9 +37,14 @@ Shell output can be enormous, and all of it lands in context. Trim it to what th
 
 ---
 
-## 4. Run `/chronicle tip` regularly
+## 4. Run `/chronicle tips` and `/chronicle cost-tips` regularly
 
-In Copilot CLI, `/chronicle` analyzes your session logs and surfaces improvement areas — where prompts were vague, where context bloated, where re-runs piled up. Running it regularly turns your own usage history into a personalized optimization checklist.
+In Copilot CLI, `/chronicle` analyzes your session logs and surfaces improvement areas — where prompts were vague, where context bloated, where re-runs piled up. Two focused variants ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)):
+
+- **`/chronicle tips`** — surfaces opportunities to use Copilot more efficiently from your recent session history.
+- **`/chronicle cost-tips`** — analyzes your token-usage patterns and suggests how to reduce cost.
+
+Running them regularly turns your own usage history into a personalized optimization checklist. Use **`/context`** any time to check current context-window usage mid-session.
 
 ---
 

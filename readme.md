@@ -33,13 +33,14 @@ A practical guide to controlling spend when using GitHub Copilot Chat and agents
 
 Starting **June 1, 2026**, every Copilot interaction in Chat, CLI, cloud agent, Spaces, Spark, and third-party coding agents is metered by **tokens** — input + output + cached — priced per model and converted to **GitHub AI Credits** (1 credit = $0.01 USD).
 
-Each Copilot plan ships with a **monthly AI Credits allowance**:
+Each Copilot plan ships with a **monthly AI Credits allowance**. Paid individual plans split it into **base credits** (fixed) plus a **flex allotment** (a variable top-up GitHub tunes as model economics change):
 
 | Plan | Monthly AI Credits | Notes |
 | --- | --- | --- |
 | Copilot Free | Limited | Plus 2,000 inline suggestions/month |
-| Copilot Pro | 1,000 | |
-| Copilot Pro+ | 3,900 | |
+| Copilot Pro | 1,500 | 1,000 base + 500 flex ($10/mo) |
+| Copilot Pro+ | 7,000 | 3,900 base + 3,100 flex ($39/mo) |
+| Copilot Max | 20,000 | 10,000 base + 10,000 flex ($100/mo) |
 | Copilot Business | 1,900 per license | Pooled at billing-entity level |
 | Copilot Enterprise | 3,900 per license | Pooled at billing-entity level |
 
@@ -98,6 +99,7 @@ If you only do five things, do these — they raise quality *and* cut tokens at 
 | **Model choice** | Which model you picked (or Auto) | Each model has its own per-token price for input, output, and cached tokens |
 | **Output length** | How verbose the response is | Output tokens are typically the most expensive bucket (~4–8× input) |
 | **Input length** | Prompt + attached context + chat history | Every turn re-sends the running conversation as input tokens |
+| **Cache misses** | Model switches, reasoning/tool changes, or resuming a cold session | Cached input bills at ~10%; breaking the cache re-sends the whole context at full input price |
 | **Agent loops** | Multiple under-the-hood model calls per task | Long agentic sessions generate many tokens; complex agent runs can dwarf a single chat |
 | **Tool overload** | Too many tools enabled | You can hit VS Code's 128-tools-per-request limit and lose time (and tokens) to retries |
 
@@ -123,8 +125,9 @@ If you only do five things, do these — they raise quality *and* cut tokens at 
 - **Reset when the topic changes.** A focused 5-turn chat is cheaper than a sprawling 50-turn one carrying yesterday's work.
 - **Summarize long histories.** Use `/compact` (or ask the model for a 5-bullet summary, copy it, start a new chat, paste it). You keep the decisions without re-sending the full transcript.
 - **Reference, don't repaste.** If you already shared a schema or file earlier in the chat, refer back to it ("using the schema from earlier…") rather than pasting it again.
+- **Keep the cache warm.** Cached context bills at ~10% of input — but switching models mid-session, changing reasoning/tools, or resuming a cold session forces a full-price rebuild. Pick one model per session (or use `Auto`, which switches only at cache boundaries) and configure reasoning/tools up front.
 
-📘 Walkthroughs: [Prune Chat History](docs/prune-history.md) · [Manage Context Attachments](docs/manage-context.md)
+📘 Walkthroughs: [Prune Chat History](docs/prune-history.md) · [Manage Context Attachments](docs/manage-context.md) · [Preserve the Cache](docs/preserve-cache.md)
 
 ---
 
@@ -175,8 +178,9 @@ When a tool exists for a deterministic step, using the tool directly avoids many
 
 **Goal:** match per-token cost to the value of the answer.
 
-- **Right-size the model.** Per-token prices span roughly 25× between lightweight (e.g. GPT-5 mini, Grok Code Fast, Gemini Flash) and powerful (e.g. GPT-5.5, Claude Opus, Gemini Pro) models. Save the powerful ones for genuinely hard problems.
-- **Use Auto for routine work.** Copilot auto model selection picks based on real-time health and gets a **10% multiplier discount** on paid plans (for legacy request-based subscribers); under UBB, Auto still helps avoid pinning an expensive model when you don't need it.
+- **Right-size the model.** Per-token prices span roughly 25× between lightweight (e.g. GPT-5 mini, GPT-5.6 Luna, MAI-Code-1-Flash, Gemini Flash) and powerful (e.g. GPT-5.5, GPT-5.6 Sol, Claude Opus, Gemini Pro) models. Save the powerful ones for genuinely hard problems.
+- **Match reasoning to the task.** Some models expose a configurable **reasoning level** (VS Code + CLI); higher reasoning burns more tokens, so keep it regular by default and raise it only for hard problems.
+- **Use Auto for routine work.** Copilot auto model selection routes by task intent, **protects your cache** (switches only at natural boundaries), and earns a **10% discount on model costs on any paid plan**; under UBB it also avoids pinning an expensive model when you don't need it.
 - **Use the right surface.** Inline suggestions and next edit suggestions don't draw AI Credits on paid plans — use them for routine edits. Reserve Chat for higher-value queries.
 - **Coach your team.** Token economy is a habit:
   - Ask precise questions.
@@ -200,6 +204,8 @@ When a tool exists for a deterministic step, using the tool directly avoids many
 | Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Fewer model calls per task; smaller, focused prompts |
 | 40-tool MCP server enabled, only 2 tools used | Prune unused MCP tools / disable whole MCP servers | Removes 8–12 KB of schema re-sent on **every** turn ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)) |
 | Agent calls an MCP tool to fetch a PR diff / file contents / logs | Run `gh pr diff` / `az ... --output json` / `kubectl get ... -o json` and feed the result to the agent | Replaces an LLM reasoning round-trip with a deterministic HTTP request ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)) |
+| Switching models mid-session / resuming a cold chat | One model per session (or `Auto`); `/compact` before resuming | Keeps the cache warm so context re-reads at ~10% instead of full input price |
+| Uncapped agent run that loops for many steps | Set an **AI credit session limit** in Copilot CLI/SDK | Agent stops cleanly at the cap instead of silently burning credits |
 
 ---
 
@@ -212,6 +218,7 @@ Step-by-step guides for the actions referenced above. Each is a short, screensho
 | Understand why quality (not cost) is the right first lever | [Think in Quality Economics](docs/quality-economics.md) |
 | Understand how harnesses, the stateless LLM & token loops work | [How Context Windows Work](docs/context-windows.md) |
 | End or reset a chat to drop stale context | [Prune Chat History](docs/prune-history.md) |
+| Keep the cache warm so context re-reads at ~10% price | [Preserve the Cache](docs/preserve-cache.md) |
 | Pick the cheapest model that fits the task | [Choose the Right Model](docs/choose-model.md) |
 | Understand AI Credits, per-token pricing & budgets | [Understand AI Credits & Per-Token Pricing](docs/ai-credits.md) |
 | Attach only the right files / selections | [Manage Context Attachments](docs/manage-context.md) |
@@ -247,6 +254,7 @@ Before sending a Copilot Chat message, ask yourself:
 
 ## Tools and Extensions
 
+- [Optimizing your AI usage to maximize efficiency and reduce cost](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage) — GitHub's **official** companion tutorial to this guide (model choice, lean context, cache preservation, session limits, guardrails).
 - [Chat Customizations Evaluations](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-chat-customizations-evaluations) — VS Code extension for evaluating and iterating on Copilot Chat customizations (instructions, prompts, and agents).
 
 ---

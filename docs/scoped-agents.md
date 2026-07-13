@@ -98,6 +98,7 @@ Rules:
 - [ ] Use **Plan → Start Implementation** for complex tasks
 - [ ] Keep a read-only planner separate from an implementer
 - [ ] Keep tools under the **128 tools/request** limit
+- [ ] Run **subagents on cheaper models** — they have their own scoped context and don't churn the main agent's cache ([Choose the Right Model](choose-model.md), [Preserve the Cache](preserve-cache.md))
 - [ ] Remember: under UBB, every model call in an agent run generates billable tokens — a small, scoped goal keeps total tokens (and AI Credits) down
 
 ---
