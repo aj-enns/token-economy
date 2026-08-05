@@ -34,19 +34,29 @@ Instead of continuing a bloated thread, jump to (or start from) a cleaner one.
 
 ---
 
-## 3. Use the `/clear` slash command
+## 3. Use `/clear` in VS Code or reset Copilot CLI
 
-Start a new chat session without leaving the panel.
-
-In the chat input, type:
+In VS Code Chat, type `/clear` to start a new chat and archive the current one (or mark it done, depending on your session configuration):
 
 ```text
 /clear
 ```
 
-Press **Enter**. The conversation is reset; the panel stays open.
+The command is registered in the official [VS Code chat implementation](https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/browser/chatSlashCommands.ts), although it is not currently described in the published VS Code user documentation.
 
-![/clear command in the chat input](images/slash-clear.png)
+In Copilot CLI, start a clean conversation when you switch problems by using either documented reset command:
+
+```text
+/new
+```
+
+or:
+
+```text
+/clear
+```
+
+Both CLI commands clear the conversation context for the next task ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#start-a-new-conversation-when-you-switch-problems)).
 
 
 ---

@@ -12,7 +12,7 @@ Under usage-based billing (UBB), each Copilot model has its own **per-token pric
 
 - At the bottom of the Chat input, click the **model picker** (shows current model name).
 - Pick a lightweight model for routine work, a powerful one for hard problems.
-- For mixed-complexity sessions, choose **`Auto`** — [Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) picks a capable model based on the intent of your task. On any **paid** Copilot plan, Auto also earns a **10% discount on model costs** ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)), and it protects your cache by only switching models at natural boundaries (see [Preserve the Cache](preserve-cache.md)).
+- For mixed-complexity sessions, choose **`Auto`** — [Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) picks a capable model based on the intent of your task and routes around degraded or busy models. On any **paid** Copilot plan, Auto also earns a **10% discount on model costs** ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#use-copilot-auto-model-selection-as-your-default)), and it protects your cache by only switching models at natural boundaries (see [Preserve the Cache](preserve-cache.md)).
 - Hover over a model in the picker to compare its input, cached-input, and output costs and its **Low**, **Medium**, or **High** generic cost tier ([source](https://code.visualstudio.com/docs/agents/guides/optimize-usage#_choose-efficient-models)).
 
 ![Model picker in the Chat input](images/model-picker.png)

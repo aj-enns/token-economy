@@ -39,12 +39,12 @@ Shell output can be enormous, and all of it lands in context. Trim it to what th
 
 ## 4. Run `/chronicle tips` and `/chronicle cost-tips` regularly
 
-In Copilot CLI, `/chronicle` analyzes your session logs and surfaces improvement areas — where prompts were vague, where context bloated, where re-runs piled up. Two focused variants ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)):
+In Copilot CLI, `/chronicle` analyzes your recent session history and surfaces opportunities to improve efficiency. Two focused variants ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#7-utilize-learnings-to-be-more-efficient-at-every-turn)):
 
 - **`/chronicle tips`** — surfaces opportunities to use Copilot more efficiently from your recent session history.
 - **`/chronicle cost-tips`** — analyzes your token-usage patterns and suggests how to reduce cost.
 
-Running them regularly turns your own usage history into a personalized optimization checklist. Use **`/context`** any time to check current context-window usage mid-session.
+Running them regularly turns your own usage history into a personalized optimization checklist. Use **`/context`** any time to check current context-window usage mid-session. When Chronicle identifies a recurring pattern, encode the smallest useful correction in your repository instructions; see [Externalize Custom Instructions](custom-instructions.md#7-turn-recurring-chronicle-findings-into-instructions).
 
 ---
 
@@ -62,9 +62,9 @@ Different models respond to context differently and can be individually tweaked 
 
 ## When to reach for these
 
-| You are… | Use these tips? |
-| --- | --- |
-| Running a handful of agents/day | Mostly skip — the basics matter more |
+| You are…                                      | Use these tips?                           |
+| --------------------------------------------- | ----------------------------------------- |
+| Running a handful of agents/day               | Mostly skip — the basics matter more      |
 | Orchestrating dozens–hundreds of async agents | Yes — small percentages compound at scale |
 
 See [Think in Quality Economics](quality-economics.md) for the maturity spectrum.

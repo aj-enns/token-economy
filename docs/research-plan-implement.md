@@ -8,11 +8,11 @@ Doing research, planning, and implementation in one long chat carries a pile of 
 
 ## 1. The three phases
 
-| Phase | What it does | Why it bloats context |
-| --- | --- | --- |
-| **Research** | Explores the codebase to find what's relevant ("I want to change X — what files matter?") | Loads many files, most of which won't matter for implementation |
-| **Plan** | Turns findings into a precise spec — a detailed to-do list that front-loads the thinking | Benefits from a reasoning model viewing the plan from every angle |
-| **Implement** | Executes the spec | Only needs the spec + the few relevant files |
+| Phase         | What it does                                                                              | Why it bloats context                                             |
+| ------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Research**  | Explores the codebase to find what's relevant ("I want to change X — what files matter?") | Loads many files, most of which won't matter for implementation   |
+| **Plan**      | Turns findings into a precise spec — a detailed to-do list that front-loads the thinking  | Benefits from a reasoning model viewing the plan from every angle |
+| **Implement** | Executes the spec                                                                         | Only needs the spec + the few relevant files                      |
 
 If you do all three in one session, the implementation phase is still dragging the entire research dump behind it.
 
@@ -37,7 +37,7 @@ Pass the *output* of each phase forward (a findings note, then a spec file), not
 - **Research / Plan / debug:** use a **reasoning model** (something with strong reasoning — it doesn't always have to be the top-tier model). Reasoning models excel at viewing a plan from every angle and finding gaps.
 - **Implement:** once the spec is tight, a **mid- or low-tier model** is often *better* — a reasoning model may re-open the plan, second-guess the spec, and "go rogue." See [Choose the Right Model](choose-model.md).
 
-> Use **Plan mode → Start Implementation** in Copilot Chat to get a reviewable plan before any edits. See [Scoped Agents & Handoffs](scoped-agents.md).
+> In VS Code, use **Plan mode → Start Implementation** to get a reviewable plan before any edits. In Copilot CLI, use `/plan`. See [Scoped Agents & Handoffs](scoped-agents.md) and GitHub's [Research, plan, then implement](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#6-research-plan-then-implement) guidance.
 
 ---
 
@@ -55,11 +55,11 @@ This saves both wall-clock time and tokens, because no agent is carrying knowled
 
 ## 5. Why this saves tokens
 
-| Without phases | With phases |
-| --- | --- |
-| Research files re-sent on every implementation turn | Research context discarded before implementation starts |
-| One giant window drifts past 50% → recency bias | Each window stays small and focused |
-| Reasoning model used end-to-end (priciest) | Reasoning only where it adds value; cheaper model for execution |
+| Without phases                                      | With phases                                                     |
+| --------------------------------------------------- | --------------------------------------------------------------- |
+| Research files re-sent on every implementation turn | Research context discarded before implementation starts         |
+| One giant window drifts past 50% → recency bias     | Each window stays small and focused                             |
+| Reasoning model used end-to-end (priciest)          | Reasoning only where it adds value; cheaper model for execution |
 
 ---
 

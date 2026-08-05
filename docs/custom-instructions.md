@@ -13,6 +13,23 @@ Anything in your "always-on" instructions (`copilot-instructions.md` and matchin
 - Does **every** chat turn need this? If no → move it out.
 - Is it a **role description** ("You are a senior engineer who…")? Usually trim-able.
 - Is it a **style rule** that only applies to one language/folder? Move to a scoped instructions file.
+- Does it record an exact build, test, or lint command the agent needs to run?
+- Does it prevent a mistake you have observed repeatedly, rather than a hypothetical one?
+
+### Give Copilot a concise project map
+
+A short navigation map can save repeated repository exploration. Include only stable, high-value orientation such as important directories, entry points, test locations, and non-obvious boundaries. Link to detailed architecture documentation rather than embedding it in always-on instructions.
+
+For example:
+
+```markdown
+- API entry point: `src/api/server.ts`
+- Database migrations: `db/migrations/`
+- Run focused tests with `npm test -- <path>`.
+- Do not edit generated clients under `src/generated/`.
+```
+
+This is different from including a full architecture overview. The map helps the agent find the source of truth; it should not duplicate that source ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#give-copilot-a-map-of-your-project)).
 
 ---
 
@@ -64,12 +81,12 @@ For larger bodies of knowledge ("how our deployment works", "our coding conventi
 
 Rough sizing guide:
 
-| Content | Where it should live |
-| --- | --- |
-| 1–2 lines, applies to all chats | Global `copilot-instructions.md` |
-| Language- or folder-specific rules | Scoped `*.instructions.md` with `applyTo` |
-| Multi-step workflow run on demand | `*.prompt.md` |
-| Larger domain knowledge / playbooks | Skill (`SKILL.md`) |
+| Content                             | Where it should live                      |
+| ----------------------------------- | ----------------------------------------- |
+| 1–2 lines, applies to all chats     | Global `copilot-instructions.md`          |
+| Language- or folder-specific rules  | Scoped `*.instructions.md` with `applyTo` |
+| Multi-step workflow run on demand   | `*.prompt.md`                             |
+| Larger domain knowledge / playbooks | Skill (`SKILL.md`)                        |
 
 ---
 
@@ -94,6 +111,24 @@ In VS Code, you can inspect the resolved context for a turn:
 
 ![Copilot Chat output channel](images/output-channel.png)
 
+---
+
+## 7. Turn recurring Chronicle findings into instructions
+
+Use Copilot CLI's `/chronicle tips` and `/chronicle cost-tips` to identify patterns in your recent sessions, then convert only recurring, verified findings into repository guidance:
+
+1. Run `/chronicle tips` or `/chronicle cost-tips`.
+2. Confirm that the issue recurs across multiple sessions.
+3. Add the smallest instruction that prevents it.
+4. Review later sessions and revise or remove the instruction when it stops helping.
+
+Examples of grounded instructions:
+
+- `Run npm test -- --runInBand after changing authentication code.`
+- `Search src/api before adding another HTTP client.`
+- `Do not modify generated files under dist/.`
+
+Treat Chronicle output as evidence to review, not text to paste wholesale. Persistent instructions should remain short, specific, and grounded in observed behavior ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#feed-insights-into-a-copilot-instructionsmd-file)).
 
 ---
 
