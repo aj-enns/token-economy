@@ -19,14 +19,14 @@ Starting **June 1, 2026**, GitHub Copilot moves from request-based billing to **
 
 Each paid individual plan's monthly allowance is split into **base credits** (fixed, matched to your subscription price) plus a **flex allotment** (a variable top-up GitHub tunes as model economics change). Base credits are consumed first; the flex allotment applies automatically after ([source](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)).
 
-| Plan | Base credits | Flex allotment | Total monthly AI Credits | Notes |
-| --- | --- | --- | --- | --- |
-| Copilot Free / Student | — | — | Limited allowance (auto model selection only) | Free: 2,000 completions/mo; Student: unlimited completions |
-| Copilot Pro ($10/mo) | 1,000 | 500 | **1,500** | Individual |
-| Copilot Pro+ ($39/mo) | 3,900 | 3,100 | **7,000** | Individual |
-| Copilot Max ($100/mo) | 10,000 | 10,000 | **20,000** | Individual — highest allowance |
-| Copilot Business | — | — | 1,900 per license | Pooled at billing-entity level |
-| Copilot Enterprise | — | — | 3,900 per license | Pooled at billing-entity level |
+| Plan                   | Base credits | Flex allotment | Total monthly AI Credits                      | Notes                                                      |
+| ---------------------- | ------------ | -------------- | --------------------------------------------- | ---------------------------------------------------------- |
+| Copilot Free / Student | —            | —              | Limited allowance (auto model selection only) | Free: 2,000 completions/mo; Student: unlimited completions |
+| Copilot Pro ($10/mo)   | 1,000        | 500            | **1,500**                                     | Individual                                                 |
+| Copilot Pro+ ($39/mo)  | 3,900        | 3,100          | **7,000**                                     | Individual                                                 |
+| Copilot Max ($100/mo)  | 10,000       | 10,000         | **20,000**                                    | Individual — highest allowance                             |
+| Copilot Business       | —            | —              | 1,900 per license                             | Pooled at billing-entity level                             |
+| Copilot Enterprise     | —            | —              | 3,900 per license                             | Pooled at billing-entity level                             |
 
 > **Copilot Max** is an individual plan added under UBB with the largest allowance — worth it if you regularly exhaust Pro+ and would otherwise pay for additional usage.
 
@@ -42,11 +42,11 @@ Code completions and next edit suggestions are **not** billed in AI Credits. The
 
 ## 2. The three token buckets (and why they cost differently)
 
-| Bucket | What it is | Typical relative cost |
-| --- | --- | --- |
-| **Input** | Your prompt, attached context, instructions, prior chat turns | Baseline |
-| **Cached input** | Context the model has already seen and stored | Roughly 10% of input cost (model-dependent) |
-| **Output** | What the model generates back to you | Roughly **4–8× the input rate** |
+| Bucket           | What it is                                                    | Typical relative cost                       |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------- |
+| **Input**        | Your prompt, attached context, instructions, prior chat turns | Baseline                                    |
+| **Cached input** | Context the model has already seen and stored                 | Roughly 10% of input cost (model-dependent) |
+| **Output**       | What the model generates back to you                          | Roughly **4–8× the input rate**             |
 
 **Implications:**
 
@@ -65,61 +65,61 @@ Prices below are per **1 million tokens**, in USD, per the official [Models and 
 
 ### OpenAI
 
-| Model | Tier | Input | Cached input | Output |
-| --- | --- | --- | --- | --- |
-| GPT-5 mini | Lightweight | $0.25 | $0.025 | $2.00 |
-| GPT-5.4 nano | Lightweight | $0.20 | $0.02 | $1.25 |
-| GPT-5.4 mini | Lightweight | $0.75 | $0.075 | $4.50 |
-| GPT-5.6 Luna | Lightweight | $1.00 | $0.10 | $6.00 |
-| GPT-5.4 | Versatile | $2.50 | $0.25 | $15.00 |
-| GPT-5.6 Terra | Versatile | $2.50 | $0.25 | $15.00 |
-| GPT-5.3-Codex | Powerful | $1.75 | $0.175 | $14.00 |
-| GPT-5.5 | Powerful | $5.00 | $0.50 | $30.00 |
-| GPT-5.6 Sol | Powerful | $5.00 | $0.50 | $30.00 |
+| Model         | Tier        | Input | Cached input | Output |
+| ------------- | ----------- | ----- | ------------ | ------ |
+| GPT-5 mini    | Lightweight | $0.25 | $0.025       | $2.00  |
+| GPT-5.4 nano  | Lightweight | $0.20 | $0.02        | $1.25  |
+| GPT-5.4 mini  | Lightweight | $0.75 | $0.075       | $4.50  |
+| GPT-5.6 Luna  | Lightweight | $1.00 | $0.10        | $6.00  |
+| GPT-5.4       | Versatile   | $2.50 | $0.25        | $15.00 |
+| GPT-5.6 Terra | Versatile   | $2.50 | $0.25        | $15.00 |
+| GPT-5.3-Codex | Powerful    | $1.75 | $0.175       | $14.00 |
+| GPT-5.5       | Powerful    | $5.00 | $0.50        | $30.00 |
+| GPT-5.6 Sol   | Powerful    | $5.00 | $0.50        | $30.00 |
 
 > **GPT-5.6 family:** Luna (lightweight, lowest-cost), Terra (balanced default), Sol (highest reasoning ceiling). Match the variant to the job.
 
 ### Anthropic (includes a cache-write cost in addition to cached input)
 
-| Model | Tier | Input | Cached input | Cache write | Output |
-| --- | --- | --- | --- | --- | --- |
-| Claude Haiku 4.5 | Versatile | $1.00 | $0.10 | $1.25 | $5.00 |
-| Claude Sonnet 5 | Versatile | $2.00 | $0.20 | $2.50 | $10.00 |
-| Claude Sonnet 4 / 4.5 / 4.6 | Versatile | $3.00 | $0.30 | $3.75 | $15.00 |
-| Claude Opus 4.5 / 4.6 / 4.7 / 4.8 | Powerful | $5.00 | $0.50 | $6.25 | $25.00 |
-| Claude Fable 5 | Powerful | $10.00 | $1.00 | $12.50 | $50.00 |
+| Model                             | Tier      | Input  | Cached input | Cache write | Output |
+| --------------------------------- | --------- | ------ | ------------ | ----------- | ------ |
+| Claude Haiku 4.5                  | Versatile | $1.00  | $0.10        | $1.25       | $5.00  |
+| Claude Sonnet 5                   | Versatile | $2.00  | $0.20        | $2.50       | $10.00 |
+| Claude Sonnet 4 / 4.5 / 4.6       | Versatile | $3.00  | $0.30        | $3.75       | $15.00 |
+| Claude Opus 4.5 / 4.6 / 4.7 / 4.8 | Powerful  | $5.00  | $0.50        | $6.25       | $25.00 |
+| Claude Fable 5                    | Powerful  | $10.00 | $1.00        | $12.50      | $50.00 |
 
 ### Google
 
-| Model | Tier | Input | Cached input | Output |
-| --- | --- | --- | --- | --- |
-| Gemini 3 Flash (preview) | Lightweight | $0.50 | $0.05 | $3.00 |
-| Gemini 3.5 Flash | Lightweight | $1.50 | $0.15 | $9.00 |
-| Gemini 2.5 Pro | Powerful | $1.25 | $0.125 | $10.00 |
-| Gemini 3.1 Pro (preview) | Powerful | $2.00 | $0.20 | $12.00 |
+| Model                    | Tier        | Input | Cached input | Output |
+| ------------------------ | ----------- | ----- | ------------ | ------ |
+| Gemini 3 Flash (preview) | Lightweight | $0.50 | $0.05        | $3.00  |
+| Gemini 3.5 Flash         | Lightweight | $1.50 | $0.15        | $9.00  |
+| Gemini 2.5 Pro           | Powerful    | $1.25 | $0.125       | $10.00 |
+| Gemini 3.1 Pro (preview) | Powerful    | $2.00 | $0.20        | $12.00 |
 
 ### Fine-tuned (GitHub) & Microsoft
 
-| Model | Provider | Tier | Input | Cached input | Output |
-| --- | --- | --- | --- | --- | --- |
-| Raptor mini | GitHub | Versatile | $0.25 | $0.025 | $2.00 |
-| MAI-Code-1-Flash | Microsoft | Lightweight | $0.75 | $0.075 | $4.50 |
+| Model            | Provider  | Tier        | Input | Cached input | Output |
+| ---------------- | --------- | ----------- | ----- | ------------ | ------ |
+| Raptor mini      | GitHub    | Versatile   | $0.25 | $0.025       | $2.00  |
+| MAI-Code-1-Flash | Microsoft | Lightweight | $0.75 | $0.075       | $4.50  |
 
 ### Open-weight (Moonshot AI)
 
-| Model | Tier | Input | Cached input | Output |
-| --- | --- | --- | --- | --- |
-| Kimi K2.7 Code | Versatile | $0.95 | $0.19 | $4.00 |
+| Model          | Tier      | Input | Cached input | Output |
+| -------------- | --------- | ----- | ------------ | ------ |
+| Kimi K2.7 Code | Versatile | $0.95 | $0.19        | $4.00  |
 
 > **Kimi K2.7 Code** is the **first open-weight model** selectable in the Copilot model picker — a lower-cost option, hosted by GitHub on Azure. It is **off by default** for Business/Enterprise; admins must enable it and should review open-weight models against their own security, compliance, and data-governance requirements first ([source](https://github.blog/changelog/2026-07-01-kimi-k2-7-is-now-available-in-github-copilot/)).
 
 **Tier rule of thumb (stable even if model names change):**
 
-| Tier | Use for |
-| --- | --- |
-| **Lightweight** | Renames, syntax help, doc Q&A, simple edits |
-| **Versatile** | Single-file edits, small refactors, tests |
-| **Powerful** | Multi-file refactors, architectural design, deep debugging |
+| Tier            | Use for                                                    |
+| --------------- | ---------------------------------------------------------- |
+| **Lightweight** | Renames, syntax help, doc Q&A, simple edits                |
+| **Versatile**   | Single-file edits, small refactors, tests                  |
+| **Powerful**    | Multi-file refactors, architectural design, deep debugging |
 
 ---
 
@@ -171,7 +171,12 @@ Mitigations:
 **Watch where credits go:**
 
 - The **AI usage** page under [github.com/settings/billing](https://github.com/settings/billing) breaks down consumption across every feature and model.
-- In VS Code you can now **see total session cost**, **track additional usage** from the Copilot status dashboard, and **inspect per-subagent usage** when work is delegated ([source](https://github.blog/changelog/2026-07-08-github-copilot-in-visual-studio-code-june-2026-releases)).
+- In VS Code, hover over a chat response to see the AI credits consumed by that turn.
+- Hover over or select the **context window control** in the chat input to see the cumulative token breakdown and total AI credits for the session.
+- Open the **Copilot status dashboard** from the Status Bar to see the percentage of your monthly allowance used.
+- Use **Agent Debug Logs** for aggregate token usage, tool calls, errors, and duration, and use **Cache Explorer** to inspect cache hit rates and reused input tokens.
+
+See [Optimize AI credit usage in VS Code](https://code.visualstudio.com/docs/agents/guides/optimize-usage#_monitor-your-usage) and [Debug chat interactions](https://code.visualstudio.com/docs/agents/agent-troubleshooting/chat-debug-view).
 
 📚 Sources: [Budgets for usage-based billing](https://docs.github.com/en/copilot/concepts/billing/budgets-for-usage-based-billing) · [Optimizing your AI usage](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)
 

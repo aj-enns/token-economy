@@ -6,8 +6,8 @@ Agents shine when they call **tools** to do real work. They waste tokens — and
 
 Primary references:
 
-- Tool picker, tool limits, and best practices in VS Code: https://code.visualstudio.com/docs/copilot/agents/agent-tools
-- Copilot UBB billing model: https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals
+- [Tool picker, tool limits, and best practices in VS Code](https://code.visualstudio.com/docs/agents/run/tools)
+- [Copilot UBB billing model](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)
 
 ---
 
@@ -15,12 +15,12 @@ Primary references:
 
 If a tool, command, or API exists for the task, ask the agent to use it directly instead of inventing the answer.
 
-| ❌ Token-heavy ask | ✅ Tool-first ask |
-| --- | --- |
-| "Figure out which tests fail" | "Run the test task and report failures" |
-| "Walk me through what files changed" | "Run `git diff --stat` and summarize" |
-| "Reason about which functions call `foo`" | "Find usages of `foo` and list them" |
-| "Write and explain a KQL query for X" | "Use the App Insights tool to fetch X" |
+| ❌ Token-heavy ask                         | ✅ Tool-first ask                        |
+| ----------------------------------------- | --------------------------------------- |
+| "Figure out which tests fail"             | "Run the test task and report failures" |
+| "Walk me through what files changed"      | "Run `git diff --stat` and summarize"   |
+| "Reason about which functions call `foo`" | "Find usages of `foo` and list them"    |
+| "Write and explain a KQL query for X"     | "Use the App Insights tool to fetch X"  |
 
 The LLM stops narrating; it just orchestrates.
 
@@ -65,9 +65,9 @@ Most chat surfaces let you turn individual tools on/off for a session. Select on
 
 A single mega-agent loaded with every domain rule pays for that whole prompt **on every call**. Specialized sub-agents or skills only pull weight when invoked.
 
-| Pattern | Cost shape |
-| --- | --- |
-| One monolith agent (auth + billing + ops + docs) | Fat prompt every call |
+| Pattern                                                       | Cost shape             |
+| ------------------------------------------------------------- | ---------------------- |
+| One monolith agent (auth + billing + ops + docs)              | Fat prompt every call  |
 | Specialized skills (`/auth`, `/billing`, …) invoked on demand | Thin prompt by default |
 
 In VS Code, define each role as a **custom `.agent.md`** with a restricted `tools` list and optional handoffs. See [Scoped Agents & Handoffs](scoped-agents.md) for the full pattern.
@@ -80,9 +80,13 @@ A chat request can have a maximum of **128 tools enabled** at a time. If you see
 
 ---
 
-## 7. Prune unused MCP tools (huge inefficiency)
+## 7. Prune unused MCP tools and understand tool search
 
-Because LLM APIs are stateless, agent runtimes typically **re-send every enabled tool's name and JSON schema with every request**. For a GitHub-style MCP server with ~40 tools, that can add **10–15 KB of schema per turn**. If the agent only ever calls 2 of them, the other 38 are pure overhead on every call ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)).
+Tool definitions consume context: each includes a name, description, and parameter schema. Historically, agent harnesses loaded every enabled definition on every request. VS Code can now **defer supported tools** and load their full definitions through tool search only when needed. The model initially sees lightweight metadata, while the heavier schemas remain outside the context until discovery ([source](https://code.visualstudio.com/blogs/2026/06/17/improving-token-efficiency-in-github-copilot#how-agentic-requests-spend-tokens)).
+
+Deferral reduces schema overhead, but a focused toolset still matters. Enabled tools contribute metadata, can invite irrelevant calls, and make selection harder. Tool search also does not make large tool results free: every result the agent consumes becomes conversation context.
+
+For a GitHub-style MCP server with ~40 tools, eagerly loaded definitions can add **10–15 KB of schema per turn**. If the agent only ever calls 2 of them, the other 38 are pure overhead on every call ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)).
 
 The GitHub Next team measured this on production agentic workflows: removing unused MCP tool registrations reduced per-call context by **8–12 KB**, saving **several thousand tokens per run** with no change in behavior. In one workflow (Smoke Claude), aggressive MCP pruning combined with a model-tier switch drove a **−79% token reduction**.
 
@@ -91,6 +95,7 @@ The GitHub Next team measured this on production agentic workflows: removing unu
 - Start with a full tool-set if you must, then **prune to the narrow set the agent actually calls**. Audit which tools are invoked vs. registered.
 - In VS Code, **disable whole MCP servers** you don't need for this chat in the tools picker — not just individual tools.
 - For custom agents, set an explicit `tools:` allowlist in `.agent.md` rather than inheriting the workspace default.
+- Let VS Code's tool search discover deferred tools; don't enable unrelated tools merely because their full schemas might be deferred.
 - 🚩 Watch for a tool registered but **called zero times** across runs — it's costing you on every turn for no benefit.
 
 > **Counter-example:** removing 8 unused GitHub MCP tools from one workflow yielded **no measurable ET savings** because the tool manifests were a small fraction of that workflow's context. Pruning helps most when tool schemas are a meaningful share of input tokens — measure before/after.
@@ -113,12 +118,12 @@ Two patterns the GitHub team uses:
 
 **Rule of thumb:**
 
-| Task | Prefer |
-| --- | --- |
+| Task                                                                            | Prefer                                    |
+| ------------------------------------------------------------------------------- | ----------------------------------------- |
 | Deterministic data fetch (diff, file contents, issue body, logs, resource list) | **CLI** (`gh`, `az`, `kubectl`, `git`, …) |
-| Action that requires the model to interpret/decide (triage, summarize, route) | **MCP tool** or model reasoning |
-| Data you'll always need | **Pre-fetch** before the agent runs |
-| Data the agent picks at runtime | **CLI inside the agent**, not MCP |
+| Action that requires the model to interpret/decide (triage, summarize, route)   | **MCP tool** or model reasoning           |
+| Data you'll always need                                                         | **Pre-fetch** before the agent runs       |
+| Data the agent picks at runtime                                                 | **CLI inside the agent**, not MCP         |
 
 The principle: **the cheapest LLM call is the one you don't make**. Move deterministic reads out of the LLM reasoning loop.
 

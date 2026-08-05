@@ -35,14 +35,14 @@ Starting **June 1, 2026**, every Copilot interaction in Chat, CLI, cloud agent, 
 
 Each Copilot plan ships with a **monthly AI Credits allowance**. Paid individual plans split it into **base credits** (fixed) plus a **flex allotment** (a variable top-up GitHub tunes as model economics change):
 
-| Plan | Monthly AI Credits | Notes |
-| --- | --- | --- |
-| Copilot Free | Limited | Plus 2,000 inline suggestions/month |
-| Copilot Pro | 1,500 | 1,000 base + 500 flex ($10/mo) |
-| Copilot Pro+ | 7,000 | 3,900 base + 3,100 flex ($39/mo) |
-| Copilot Max | 20,000 | 10,000 base + 10,000 flex ($100/mo) |
-| Copilot Business | 1,900 per license | Pooled at billing-entity level |
-| Copilot Enterprise | 3,900 per license | Pooled at billing-entity level |
+| Plan               | Monthly AI Credits | Notes                               |
+| ------------------ | ------------------ | ----------------------------------- |
+| Copilot Free       | Limited            | Plus 2,000 inline suggestions/month |
+| Copilot Pro        | 1,500              | 1,000 base + 500 flex ($10/mo)      |
+| Copilot Pro+       | 7,000              | 3,900 base + 3,100 flex ($39/mo)    |
+| Copilot Max        | 20,000             | 10,000 base + 10,000 flex ($100/mo) |
+| Copilot Business   | 1,900 per license  | Pooled at billing-entity level      |
+| Copilot Enterprise | 3,900 per license  | Pooled at billing-entity level      |
 
 When the allowance is exhausted, additional usage is billed at per-token rates (1 credit = $0.01), subject to budget policy.
 
@@ -94,14 +94,14 @@ If you only do five things, do these — they raise quality *and* cut tokens at 
 
 ## Key Cost Drivers
 
-| Driver | What It Is | Why It Costs in UBB |
-| --- | --- | --- |
-| **Model choice** | Which model you picked (or Auto) | Each model has its own per-token price for input, output, and cached tokens |
-| **Output length** | How verbose the response is | Output tokens are typically the most expensive bucket (~4–8× input) |
-| **Input length** | Prompt + attached context + chat history | Every turn re-sends the running conversation as input tokens |
-| **Cache misses** | Model switches, reasoning/tool changes, or resuming a cold session | Cached input bills at ~10%; breaking the cache re-sends the whole context at full input price |
-| **Agent loops** | Multiple under-the-hood model calls per task | Long agentic sessions generate many tokens; complex agent runs can dwarf a single chat |
-| **Tool overload** | Too many tools enabled | You can hit VS Code's 128-tools-per-request limit and lose time (and tokens) to retries |
+| Driver            | What It Is                                                         | Why It Costs in UBB                                                                           |
+| ----------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| **Model choice**  | Which model you picked (or Auto)                                   | Each model has its own per-token price for input, output, and cached tokens                   |
+| **Output length** | How verbose the response is                                        | Output tokens are typically the most expensive bucket (~4–8× input)                           |
+| **Input length**  | Prompt + attached context + chat history                           | Every turn re-sends the running conversation as input tokens                                  |
+| **Cache misses**  | Model switches, reasoning/tool changes, or resuming a cold session | Cached input bills at ~10%; breaking the cache re-sends the whole context at full input price |
+| **Agent loops**   | Multiple under-the-hood model calls per task                       | Long agentic sessions generate many tokens; complex agent runs can dwarf a single chat        |
+| **Tool overload** | Too many tools enabled                                             | You can hit VS Code's 128-tools-per-request limit and lose time (and tokens) to retries       |
 
 ---
 
@@ -145,9 +145,9 @@ If you only do five things, do these — they raise quality *and* cut tokens at 
 
 ### Example
 
-| Prompt Style | What happens |
-| --- | --- |
-| "Tell me everything about batch jobs" | A long, general answer — lots of output tokens |
+| Prompt Style                                                  | What happens                                       |
+| ------------------------------------------------------------- | -------------------------------------------------- |
+| "Tell me everything about batch jobs"                         | A long, general answer — lots of output tokens     |
 | "Show failed batch jobs in the past hour and why they failed" | A short, targeted answer — far fewer output tokens |
 
 📘 Walkthrough: [Ask Focused Questions](docs/focused-questions.md)
@@ -194,18 +194,18 @@ When a tool exists for a deterministic step, using the tool directly avoids many
 
 ## Real-World Savings Examples
 
-| Pattern | Optimized Approach | Why it helps under UBB |
-| --- | --- | --- |
-| Overly broad query: *"Explain everything about X"* | Focused query: *"Show X's key errors and reasons"* | Drastically fewer **output tokens** (the priciest bucket) |
-| LLM reasoning through a tool step | Direct tool/API call | Avoids many extra model calls and the tokens they generate |
-| Large always-on instructions | On-demand prompts/skills | Keeps input tokens small on every turn |
-| Growing chat history kept intact | `/clear`, new chat, or `/compact` | Caps the running input the model re-reads each turn |
-| Powerful model for trivial tasks | Lightweight model for routine work | Up to ~25× cheaper per token |
-| Mega-agent with every tool loaded | Plan → Start Implementation; scoped custom agents | Fewer model calls per task; smaller, focused prompts |
-| 40-tool MCP server enabled, only 2 tools used | Prune unused MCP tools / disable whole MCP servers | Removes 8–12 KB of schema re-sent on **every** turn ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)) |
+| Pattern                                                           | Optimized Approach                                                                                     | Why it helps under UBB                                                                                                                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Overly broad query: *"Explain everything about X"*                | Focused query: *"Show X's key errors and reasons"*                                                     | Drastically fewer **output tokens** (the priciest bucket)                                                                                                                               |
+| LLM reasoning through a tool step                                 | Direct tool/API call                                                                                   | Avoids many extra model calls and the tokens they generate                                                                                                                              |
+| Large always-on instructions                                      | On-demand prompts/skills                                                                               | Keeps input tokens small on every turn                                                                                                                                                  |
+| Growing chat history kept intact                                  | `/clear`, new chat, or `/compact`                                                                      | Caps the running input the model re-reads each turn                                                                                                                                     |
+| Powerful model for trivial tasks                                  | Lightweight model for routine work                                                                     | Up to ~25× cheaper per token                                                                                                                                                            |
+| Mega-agent with every tool loaded                                 | Plan → Start Implementation; scoped custom agents                                                      | Fewer model calls per task; smaller, focused prompts                                                                                                                                    |
+| 40-tool MCP server enabled, only 2 tools used                     | Prune unused MCP tools / disable whole MCP servers                                                     | Removes 8–12 KB of schema re-sent on **every** turn ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/))                    |
 | Agent calls an MCP tool to fetch a PR diff / file contents / logs | Run `gh pr diff` / `az ... --output json` / `kubectl get ... -o json` and feed the result to the agent | Replaces an LLM reasoning round-trip with a deterministic HTTP request ([source](https://github.blog/ai-and-ml/github-copilot/improving-token-efficiency-in-github-agentic-workflows/)) |
-| Switching models mid-session / resuming a cold chat | One model per session (or `Auto`); `/compact` before resuming | Keeps the cache warm so context re-reads at ~10% instead of full input price |
-| Uncapped agent run that loops for many steps | Set an **AI credit session limit** in Copilot CLI/SDK | Agent stops cleanly at the cap instead of silently burning credits |
+| Switching models mid-session / resuming a cold chat               | One model per session (or `Auto`); `/compact` before resuming                                          | Keeps the cache warm so context re-reads at ~10% instead of full input price                                                                                                            |
+| Uncapped agent run that loops for many steps                      | Set an **AI credit session limit** in Copilot CLI/SDK                                                  | Agent stops cleanly at the cap instead of silently burning credits                                                                                                                      |
 
 ---
 
@@ -213,24 +213,25 @@ When a tool exists for a deterministic step, using the tool directly avoids many
 
 Step-by-step guides for the actions referenced above. Each is a short, screenshot-friendly walkthrough.
 
-| Goal | Walkthrough |
-| --- | --- |
-| Understand why quality (not cost) is the right first lever | [Think in Quality Economics](docs/quality-economics.md) |
-| Understand how harnesses, the stateless LLM & token loops work | [How Context Windows Work](docs/context-windows.md) |
-| End or reset a chat to drop stale context | [Prune Chat History](docs/prune-history.md) |
-| Keep the cache warm so context re-reads at ~10% price | [Preserve the Cache](docs/preserve-cache.md) |
-| Pick the cheapest model that fits the task | [Choose the Right Model](docs/choose-model.md) |
-| Understand AI Credits, per-token pricing & budgets | [Understand AI Credits & Per-Token Pricing](docs/ai-credits.md) |
-| Attach only the right files / selections | [Manage Context Attachments](docs/manage-context.md) |
-| Get short, on-target answers | [Ask Focused Questions](docs/focused-questions.md) |
-| Split work into fresh windows per phase | [Research → Plan → Implement](docs/research-plan-implement.md) |
-| Counter compounding errors with tests & linters | [Add Deterministic Guardrails](docs/deterministic-guardrails.md) |
-| Make agents call tools instead of reasoning aloud | [Use Tools & Agents Efficiently](docs/tools-and-agents.md) |
-| Build planner→implementer agent handoffs | [Scoped Agents & Handoffs](docs/scoped-agents.md) |
-| Move boilerplate out of every prompt | [Externalize Custom Instructions](docs/custom-instructions.md) |
-| Know which config to use (instructions, agents, skills, MCPs, subagents…) | [Agent Configs Explained](docs/agent-configs.md) |
-| Squeeze static-token overhead at scale | [Power-User Token Tips](docs/power-user-tips.md) |
-| Build durable habits for agentic development | [Future-Proof Your Skills](docs/future-proofing.md) |
+| Goal                                                                      | Walkthrough                                                      |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Understand why quality (not cost) is the right first lever                | [Think in Quality Economics](docs/quality-economics.md)          |
+| Understand how harnesses, the stateless LLM & token loops work            | [How Context Windows Work](docs/context-windows.md)              |
+| End or reset a chat to drop stale context                                 | [Prune Chat History](docs/prune-history.md)                      |
+| Keep the cache warm so context re-reads at ~10% price                     | [Preserve the Cache](docs/preserve-cache.md)                     |
+| Pick the cheapest model that fits the task                                | [Choose the Right Model](docs/choose-model.md)                   |
+| Understand AI Credits, per-token pricing & budgets                        | [Understand AI Credits & Per-Token Pricing](docs/ai-credits.md)  |
+| Attach only the right files / selections                                  | [Manage Context Attachments](docs/manage-context.md)             |
+| Get short, on-target answers                                              | [Ask Focused Questions](docs/focused-questions.md)               |
+| Split work into fresh windows per phase                                   | [Research → Plan → Implement](docs/research-plan-implement.md)   |
+| Counter compounding errors with tests & linters                           | [Add Deterministic Guardrails](docs/deterministic-guardrails.md) |
+| Make agents call tools instead of reasoning aloud                         | [Use Tools & Agents Efficiently](docs/tools-and-agents.md)       |
+| Build planner→implementer agent handoffs                                  | [Scoped Agents & Handoffs](docs/scoped-agents.md)                |
+| Move boilerplate out of every prompt                                      | [Externalize Custom Instructions](docs/custom-instructions.md)   |
+| Know which config to use (instructions, agents, skills, MCPs, subagents…) | [Agent Configs Explained](docs/agent-configs.md)                 |
+| Squeeze static-token overhead at scale                                    | [Power-User Token Tips](docs/power-user-tips.md)                 |
+| Apply FinOps controls to production agent systems                         | [Apply FinOps to Production Agents](docs/agent-finops.md)        |
+| Build durable habits for agentic development                              | [Future-Proof Your Skills](docs/future-proofing.md)              |
 
 > Screenshots live in [`docs/images/`](docs/images/README.md). The how-to docs reference them by filename — drop matching PNGs in to enable inline images.
 

@@ -47,6 +47,12 @@ On every loop the harness sends the *whole* conversation to the LLM again:
 
 Some of those input tokens may be **cached** (cheaper, but not guaranteed). The takeaway: don't get lost in tokenization details you can't control. Think at the level you *can* control — **prompts, files, and responses all consume tokens, and they compound with each loop.**
 
+### The prompt prefix
+
+Much of the beginning of an agent request repeats across turns: system instructions, tool definitions, repository context, and conversation history. This stable beginning is the **prompt prefix**. When consecutive requests share the same prefix, the model provider can reuse cached model state rather than process that portion again.
+
+The match stops at the first divergence. A changed instruction, model, reasoning setting, or tool configuration near the beginning can make everything after it a cache miss. Keep stable configuration at the front of the session and add volatile material, such as attachments and command output, later. See [Preserve the Cache](preserve-cache.md) and the official [VS Code explanation of prompt-prefix caching](https://code.visualstudio.com/blogs/2026/06/17/improving-token-efficiency-in-github-copilot#how-agentic-requests-spend-tokens).
+
 A rough sense of scale:
 
 - 1 token ≈ ¾ of an English word (a fine mental model is "1 token ≈ 1 word").

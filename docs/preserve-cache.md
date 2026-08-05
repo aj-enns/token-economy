@@ -20,11 +20,11 @@ So cache discipline is a silent multiplier on every long session: get it right a
 
 Three common actions force a full, full-price context rebuild ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)):
 
-| Action | Why it breaks the cache |
-| --- | --- |
-| **Switching models mid-session** | One model can't reuse another model's cache — the next request rebuilds from scratch. |
-| **Coming back to an old session** | Caches expire after inactivity — **24h for OpenAI models, ~1h for most others**. A cold session rebuilds. |
-| **Changing reasoning effort, context size, or the enabled tools / MCP servers mid-session** | Each of these changes the cached prefix, so it can't be reused. |
+| Action                                                                                      | Why it breaks the cache                                                                                   |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Switching models mid-session**                                                            | One model can't reuse another model's cache — the next request rebuilds from scratch.                     |
+| **Coming back to an old session**                                                           | Caches expire after inactivity — **24h for OpenAI models, ~1h for most others**. A cold session rebuilds. |
+| **Changing reasoning effort, context size, or the enabled tools / MCP servers mid-session** | Each of these changes the cached prefix, so it can't be reused.                                           |
 
 ---
 
@@ -38,7 +38,31 @@ Three common actions force a full, full-price context rebuild ([source](https://
 
 ---
 
-## 4. Anti-patterns to watch for
+## 4. Inspect cache behavior
+
+Use VS Code's **Cache Explorer** to compare consecutive model turns and find the first point where their prompt prefixes diverge:
+
+1. Open the Chat view's **…** menu and select **Show Agent Debug Logs**.
+2. Select the session description to open its Summary view.
+3. Select **Cache Explorer**.
+
+Each turn shows its cache-hit percentage, duration, model, and timestamp. The prompt signature breaks the request into system instructions, tool definitions, and messages; expand the first changed component to see what invalidated the remaining prefix.
+
+The surrounding **Summary** view also shows aggregate token usage, tool calls, errors, and session duration. See [Diagnose prompt caching with the Cache Explorer](https://code.visualstudio.com/docs/agents/agent-troubleshooting/cache-explorer).
+
+### What Copilot optimizes automatically
+
+The Copilot harness also reduces cache and context overhead without user configuration:
+
+- Supported OpenAI models use extended prompt-cache retention for up to 24 hours.
+- Anthropic requests place cache breakpoints at stable prompt boundaries and recent cacheable messages.
+- Tool search can defer full tool schemas and append discovered tools after the stable prefix, preserving the earlier cache.
+
+These are harness implementation details, not settings you configure in VS Code. In particular, `prompt_cache_retention` is a provider request parameter configured by the harness. See [Improving token efficiency for GitHub Copilot in VS Code](https://code.visualstudio.com/blogs/2026/06/17/improving-token-efficiency-in-github-copilot).
+
+---
+
+## 5. Anti-patterns to watch for
 
 - 🚩 Toggling MCP servers / tools on and off mid-conversation to "try something."
 - 🚩 Bumping reasoning effort up for one hard step, then back down — each flip rebuilds the cache.

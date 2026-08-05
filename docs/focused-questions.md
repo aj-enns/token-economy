@@ -8,12 +8,12 @@ Broad prompts produce essays. Focused prompts produce answers. Under usage-based
 
 ## 1. Replace "tell me about X" with "show me Y"
 
-| ❌ Broad | ✅ Focused |
-| --- | --- |
+| ❌ Broad                                   | ✅ Focused                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------- |
 | "Tell me everything about our batch jobs" | "List the failed batch jobs in the last hour and the top error message for each" |
-| "Explain authentication" | "Where is the JWT validated in this file?" |
-| "Improve this code" | "Reduce the time complexity of `processItems` from O(n²) to O(n)" |
-| "Write tests" | "Write 3 unit tests for `parseInput`: valid input, empty string, malformed JSON" |
+| "Explain authentication"                  | "Where is the JWT validated in this file?"                                       |
+| "Improve this code"                       | "Reduce the time complexity of `processItems` from O(n²) to O(n)"                |
+| "Write tests"                             | "Write 3 unit tests for `parseInput`: valid input, empty string, malformed JSON" |
 
 The right column typically returns much shorter answers for the same useful outcome.
 
@@ -28,6 +28,14 @@ Cap response length explicitly:
 - "Return **only the changed lines** as a diff."
 - "**Code only**, no commentary."
 - "**Yes/no plus one sentence** of reasoning."
+
+Also define a clear stopping condition so the agent does not expand the task after satisfying it:
+
+- "Stop when the named test passes."
+- "Do not refactor unrelated code."
+- "Make only the requested change, run the focused test, and report the result."
+
+A useful prompt states the task, supplies known relevant context, and defines what "done" means. This reduces exploratory calls, rework, and scope drift ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage#2-provide-clear-guidance-in-your-prompts)).
 
 ---
 
@@ -56,12 +64,12 @@ You only pay for what you actually need at each step, and each step's output is 
 
 ## 4. Ask for the smallest unit that solves your problem
 
-| You want | Ask for |
-| --- | --- |
+| You want                     | Ask for                                         |
+| ---------------------------- | ----------------------------------------------- |
 | To know if a fix is possible | "Yes/no: can this be done with a single regex?" |
-| The shape of a solution | "Sketch the function signature only" |
-| To start coding | "One example call site" |
-| The full implementation | (only when ready) "Implement the function" |
+| The shape of a solution      | "Sketch the function signature only"            |
+| To start coding              | "One example call site"                         |
+| The full implementation      | (only when ready) "Implement the function"      |
 
 Climb the ladder only as far as you need.
 

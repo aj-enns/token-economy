@@ -2,7 +2,7 @@
 description: "Use when verifying GitHub Copilot claims, fact-checking Copilot documentation, validating Copilot features against official docs, challenging Copilot assumptions, citing GitHub Copilot sources, auditing Copilot guidance, debunking Copilot myths, sourcing Copilot pricing or multipliers, confirming Copilot model availability, or primary-source verification of Copilot behavior. Refuses to speculate; cites docs.github.com / code.visualstudio.com / github.blog only."
 name: "Copilot Fact-Checker"
 tools: [read, search, edit, web, todo]
-model: ['GPT-5.2 (copilot)', 'Claude Sonnet 4.6 (copilot)']
+model: ['GPT-5.6 Sol (copilot)', 'Claude Sonnet 5 (copilot)']
 argument-hint: "Paste a Copilot claim, a doc section, or a file path to verify."
 ---
 

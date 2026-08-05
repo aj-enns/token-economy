@@ -45,11 +45,11 @@ The attachment chips above the chat input persist across turns.
 
 `#codebase` (workspace-wide context) pulls in many files. Use it for genuinely cross-cutting questions; for anything narrower, attach the specific file(s).
 
-| Question | Use |
-| --- | --- |
-| "Where is the auth flow defined?" | `#codebase` |
+| Question                              | Use                      |
+| ------------------------------------- | ------------------------ |
+| "Where is the auth flow defined?"     | `#codebase`              |
 | "Why does this function return null?" | Selection or single file |
-| "Refactor this class" | Single file |
+| "Refactor this class"                 | Single file              |
 
 ---
 
@@ -68,6 +68,20 @@ Sometimes the cheapest "context" is no context — let a tool fetch what it need
 
 - A search/grep tool can find a symbol faster (and with fewer input tokens) than attaching ten files.
 - A terminal command's output is one line in chat instead of a 200-line attachment.
+
+---
+
+## 7. Exclude noisy files from agent search
+
+Search matches enter the conversation context even when the agent never opens the matching file. Exclude generated files, build output, logs, and large datasets that do not help the agent:
+
+- **`.gitignore`** excludes matching files from text search, grep, and the semantic index.
+- **`files.exclude`** also excludes matching files from those sources and hides them from the Explorer.
+- **`search.exclude`** excludes matching files from text search and grep while keeping them visible in the Explorer.
+
+Use `search.exclude` for files you still want to browse manually, and reserve `.gitignore` for files that also should not be tracked. An ignored file can still enter context if you open it or select text from it.
+
+See [Improve agent search with exclusion settings](https://code.visualstudio.com/docs/agents/reference/workspace-context#_improve-agent-search-with-exclusion-settings).
 
 ---
 

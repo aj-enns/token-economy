@@ -13,6 +13,7 @@ Under usage-based billing (UBB), each Copilot model has its own **per-token pric
 - At the bottom of the Chat input, click the **model picker** (shows current model name).
 - Pick a lightweight model for routine work, a powerful one for hard problems.
 - For mixed-complexity sessions, choose **`Auto`** — [Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) picks a capable model based on the intent of your task. On any **paid** Copilot plan, Auto also earns a **10% discount on model costs** ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)), and it protects your cache by only switching models at natural boundaries (see [Preserve the Cache](preserve-cache.md)).
+- Hover over a model in the picker to compare its input, cached-input, and output costs and its **Low**, **Medium**, or **High** generic cost tier ([source](https://code.visualstudio.com/docs/agents/guides/optimize-usage#_choose-efficient-models)).
 
 ![Model picker in the Chat input](images/model-picker.png)
 
@@ -23,12 +24,12 @@ Under usage-based billing (UBB), each Copilot model has its own **per-token pric
 
 ## 2. Quick model-selection guide
 
-| Task | Suggested tier | Example models |
-| --- | --- | --- |
-| Renames, syntax help, doc lookups, simple Q&A | **Lightweight** | GPT-5 mini, GPT-5.6 Luna, Gemini 3 Flash, MAI-Code-1-Flash, Claude Haiku, Kimi K2.7 |
-| Single-file edits, small refactors, test scaffolding | **Versatile** | GPT-5.4 mini, GPT-5.6 Terra, Claude Sonnet, Raptor mini |
-| Multi-file refactors, architectural design, deep debugging | **Powerful** | GPT-5.5, GPT-5.6 Sol, Claude Opus, Gemini Pro |
-| Repetitive code completions while typing | **Inline suggestions / next edit suggestions** | (Not billed in AI Credits on paid plans) |
+| Task                                                       | Suggested tier                                 | Example models                                                                      |
+| ---------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Renames, syntax help, doc lookups, simple Q&A              | **Lightweight**                                | GPT-5 mini, GPT-5.6 Luna, Gemini 3 Flash, MAI-Code-1-Flash, Claude Haiku, Kimi K2.7 |
+| Single-file edits, small refactors, test scaffolding       | **Versatile**                                  | GPT-5.4 mini, GPT-5.6 Terra, Claude Sonnet, Raptor mini                             |
+| Multi-file refactors, architectural design, deep debugging | **Powerful**                                   | GPT-5.5, GPT-5.6 Sol, Claude Opus, Gemini Pro                                       |
+| Repetitive code completions while typing                   | **Inline suggestions / next edit suggestions** | (Not billed in AI Credits on paid plans)                                            |
 
 > Names change over time — apply the *tier* rule, not specific model names. See [Models and pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing) for current per-token rates.
 
@@ -48,7 +49,7 @@ Workflow:
 
 ## 4. Match the reasoning level to the task
 
-Some models support **configurable reasoning levels** — how much the model reasons before it responds. A higher level can improve hard problems, but it **consumes more tokens (and credits)**, so use the regular level by default and raise it only for genuinely difficult tasks. Configurable reasoning is available in **VS Code and Copilot CLI** for supported models ([source](https://docs.github.com/en/copilot/tutorials/optimize-ai-usage)).
+Some models support **configurable reasoning levels** — how much the model reasons before it responds. A higher level can improve hard problems, but it **consumes more tokens (and credits)**. VS Code chooses evaluated defaults and uses adaptive reasoning where supported, allowing the model to adjust effort to task complexity. Keep those defaults for routine work and raise effort only for genuinely difficult tasks ([source](https://code.visualstudio.com/docs/agents/guides/optimize-usage#_use-thinking-effort-defaults)).
 
 > Set the reasoning level (and context size) **before** you start a session — changing it mid-session invalidates the cache. See [Preserve the Cache](preserve-cache.md).
 

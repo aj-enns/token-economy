@@ -75,12 +75,31 @@ Switching agents (for example, **Ask**, **Plan**, **Agent**) is a quick way to c
 
 ## 6. Use the `/compact` slash command
 
-If a chat is getting long, `/compact` compacts the conversation context by summarizing it.
+If a chat is getting long, `/compact` compacts the conversation context by summarizing it. You can tell the summary what to retain, for example:
+
+```text
+/compact focus on the API design decisions
+```
+
+Use compaction when the task is still the same but its history has become too large. Start a new chat when the task itself changes.
 
 
 ---
 
-## 7. Summarize-and-restart (Agent mode)
+## 7. Fork to explore an alternative
+
+Fork a conversation when you want to try another approach or ask a side question without changing the original thread. A fork inherits the conversation history, which avoids re-establishing context and can preserve the prompt cache for the next request.
+
+- Type `/fork` to copy the full conversation into a new session.
+- Hover over an earlier request and select **Fork Conversation** to branch from that checkpoint.
+
+A fork is not a pruning tool because it retains inherited history. Use it for branching; use a new chat or `/compact` to reduce context.
+
+See [Fork a chat session](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions#_fork-a-chat-session).
+
+---
+
+## 8. Summarize-and-restart (Agent mode)
 
 When you've made progress in a long agent session but the context is getting heavy:
 
@@ -98,7 +117,7 @@ You keep the *decisions* without re-sending the full prior transcript as input t
 
 ---
 
-## 8. Delete sessions on github.com
+## 9. Delete sessions on github.com
 
 For Copilot Chat in the browser:
 
